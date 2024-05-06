@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import List, Optional, Dict, Any, Literal
 
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field, root_validator  # model_validator
 
 from backend.constants import FQN_SEPARATOR
 
@@ -263,7 +263,7 @@ class BaseDataSource(BaseModel):
     def fqn(self):
         return f"{FQN_SEPARATOR}".join([self.type, self.uri])
 
-    @model_validator(mode="after")  # @ root_validator
+    @root_validator  # @model_validator(mode="after")
     def validate_fqn(self, values: Dict) -> Dict:
         values["fqn"] = f"{FQN_SEPARATOR}".join([values["type"], values["uri"]])
         return values

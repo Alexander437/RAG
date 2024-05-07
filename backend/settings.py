@@ -17,6 +17,7 @@ class Settings(BaseSettings):
     TFY_SERVICE_ROOT_PATH: Optional[str] = "/"
     TFY_API_KEY: str
     OPENAI_API_KEY: Optional[str]
+    GIGACHAT_API_KEY: Optional[str]
     TFY_HOST: Optional[str]
     TFY_LLM_GATEWAY_URL: str
     EMBEDDING_CACHE_CONFIG: Optional[EmbeddingCacheConfig] = None
@@ -29,6 +30,7 @@ class Settings(BaseSettings):
     JOB_COMPONENT_NAME = os.getenv("JOB_COMPONENT_NAME", "")
     TFY_API_KEY = os.getenv("TFY_API_KEY", "")
     OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+    GIGACHAT_API_KEY = os.getenv("OPENAI_API_KEY", "")
     TFY_HOST = os.getenv("TFY_HOST", "")
     TFY_LLM_GATEWAY_URL = os.getenv("TFY_LLM_GATEWAY_URL", "")
     EMBEDDING_CACHE_CONFIG = (

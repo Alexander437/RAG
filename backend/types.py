@@ -25,7 +25,7 @@ class DataPoint(BaseModel):
     - data_point_hash (str): Хэш точки данных в данном источнике, который будет обновляться при обновлении точки данных
     - metadata (Optional[Dict[str, str]]): Метаданные для точки данных
     """
-    data_resource_fqn: str = Field(
+    data_source_fqn: str = Field(
         title="Fully qualified name of the data resource",
     )
 

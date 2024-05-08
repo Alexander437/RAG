@@ -31,6 +31,11 @@ vm.max_map_count=262144
 * https://github.com/truefoundry/rag-blog
 * https://www.linkedin.com/pulse/what-hardware-do-you-need-rag-genai-vasudev-lal-cf4vc
 
+## Tests
+
+```bash
+pytest tests/dataloaders
+```
 
 ## Additional
 

@@ -1,10 +1,8 @@
 # A global registry to store all available embedders.
-from langchain.embeddings import CacheBackedEmbeddings
 from langchain.embeddings.base import Embeddings
-from langchain_community.storage.redis import RedisStore
 
 from backend.settings import settings
-from backend.types import EmbedderConfig, EmbeddingCacheConfig
+from backend.types import EmbedderConfig
 
 EMBEDDER_REGISTRY = {}
 
@@ -13,6 +11,7 @@ def register_embedder(provider: str, cls) -> None:
     """
     Регистрирует все доступные Embedders, наследованные от `BaseEmbedder`
     Args:
+        provider: Ключ в EMBEDDER_REGISTRY
         cls: Класс Embedder'а
     Returns:
         None
@@ -24,18 +23,6 @@ def register_embedder(provider: str, cls) -> None:
             f"Error while registering class {cls.__name__}, already taken by {EMBEDDER_REGISTRY[provider].__name__}"
         )
     EMBEDDER_REGISTRY[provider] = cls
-
-
-def get_embedding_cache_store(config: EmbeddingCacheConfig):
-    if config.provider == "redis":
-        return RedisStore(
-            redis_url=config.url,
-            client_kwargs=config.config,
-            namespace="embedding_caches",
-        )
-    raise NotImplementedError(
-        f"Embedding cache provider {config.provider} not supported!"
-    )
 
 
 def get_embedder(embedder_config: EmbedderConfig) -> Embeddings:
@@ -51,17 +38,8 @@ def get_embedder(embedder_config: EmbedderConfig) -> Embeddings:
         raise ValueError(
             f"No embedder registered with provider {embedder_config.provider}"
         )
-    base_embedder: Embeddings = EMBEDDER_REGISTRY[embedder_config.provider](
+    embedder: Embeddings = EMBEDDER_REGISTRY[embedder_config.provider](
         **embedder_config.config
-    )
-    if not settings.EMBEDDING_CACHE_CONFIG:
-        return base_embedder
-
-    store = get_embedding_cache_store(config=settings.EMBEDDING_CACHE_CONFIG)
-    embedder = CacheBackedEmbeddings.from_bytes_store(
-        underlying_embeddings=base_embedder,
-        document_embedding_cache=store,
-        namespace=embedder_config.config.get("model", "default"),
     )
     return embedder
 

@@ -65,10 +65,10 @@ class WebLoader(BaseDataLoader):
 
                 # If the data ingestion mode is incremental, check if the data point already exists.
                 if (
-                        data_ingestion_mode == DataIngestionMode.INCREMENTAL
-                        and previous_snapshot.get(data_point.data_point_fqn)
-                        and previous_snapshot.get(data_point.data_point_fqn)
-                        == data_point.data_point_hash
+                    data_ingestion_mode == DataIngestionMode.INCREMENTAL
+                    and previous_snapshot.get(data_point.data_point_fqn)
+                    and previous_snapshot.get(data_point.data_point_fqn)
+                    == data_point.data_point_hash
                 ):
                     continue
 

@@ -134,15 +134,6 @@ class MetadataStoreConfig(BaseModel):
     config: Optional[dict] = None
 
 
-class EmbeddingCacheConfig(BaseModel):
-    """
-    Embedding cache configuration
-    """
-    provider: str
-    url: Optional[str] = None
-    config: Optional[dict] = None
-
-
 class LLMConfig(BaseModel):
     """
     Конфигурация LLM
@@ -263,7 +254,7 @@ class BaseDataSource(BaseModel):
     def fqn(self):
         return f"{FQN_SEPARATOR}".join([self.type, self.uri])
 
-    #@root_validator  # @model_validator(mode="after")
+    # @root_validator  # @model_validator(mode="after")
     def validate_fqn(self, values: Dict) -> Dict:
         values["fqn"] = f"{FQN_SEPARATOR}".join([values["type"], values["uri"]])
         return values

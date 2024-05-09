@@ -1,32 +1,29 @@
-import typing
-from typing import Optional
+from typing import Optional, List
 
 from langchain.docstore.document import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 from backend.modules.parsers.parser import BaseParser
 from backend.modules.parsers.utils import contains_text
-from backend.types import LoadedDataPoint
 
 
 class TextParser(BaseParser):
     """
-    TextParser is a parser class for processing plain text files.
+    Парсер для работы с простыми текстовыми файлами
     """
 
     supported_file_extensions = [".txt"]
 
     def __init__(self, max_chunk_size: int = 1000, *args, **kwargs):
-        """
-        Initializes the TextParser object.
-        """
+        super().__init__(*args, **kwargs)
         self.max_chunk_size = max_chunk_size
 
-    async def get_chunks(
-        self, filepath: str, metadata: Optional[dict], *args, **kwargs
-    ) -> typing.List[Document]:
+    async def get_chunks(self,
+                         filepath: str,
+                         metadata: Optional[dict],
+                         *args, **kwargs) -> List[Document]:
         """
-        Asynchronously loads the text from a text file and returns it in chunks.
+        Асинхронно извлекает текст из текстовых файлов и возвращает его в chunk'ах.
         """
         content = None
         with open(filepath, "r") as f:

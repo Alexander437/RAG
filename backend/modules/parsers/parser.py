@@ -43,9 +43,10 @@ class BaseParser(ABC):
         """
         Асинхронно читает файл и возвращает его контент в chunk'ах
         Parameters:
-            loaded_data_point (LoadedDataPoint): Загруженный для чтения и парсинга документ
+            filepath: Путь к файлу
+            metadata: Метаданные для каждого возвращаемого Document'а
         Returns:
-            typing.List[Document]: Список объектов Document, каждый является chunk'ом из исходного файла.
+            List[Document]: Список объектов Document, каждый является chunk'ом из исходного файла.
         """
         pass
 
@@ -92,13 +93,13 @@ def list_parsers() -> List[dict]:
     Возвращает список всех зарегистрированных парсеров
 
     Returns:
-        List[dict]: A list of all the registered parsers.
+        List[dict]: Список с зарегистрированными парсерами
     """
     global PARSER_REGISTRY
     return [
         {
-            "type": type,
+            "type": parser_type,
             "class": cls.__name__,
         }
-        for type, cls in PARSER_REGISTRY.items()
+        for parser_type, cls in PARSER_REGISTRY.items()
     ]

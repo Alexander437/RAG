@@ -4,19 +4,28 @@ from typing import Optional
 import orjson
 from pydantic import BaseSettings
 
-from backend.types import EmbeddingCacheConfig, MetadataStoreConfig, VectorDBConfig
+from backend.types import  MetadataStoreConfig, VectorDBConfig
 
 
 class Settings(BaseSettings):
     """
     Класс Settings для хранения всех переменных среды
     """
-    LOG_LEVEL: str = "info"
+    LOG_LEVEL: str
+    LOCAL: bool
+    METADATA_STORE_CONFIG: MetadataStoreConfig
+    GIGACHAT_API_KEY: str
+
+    LOG_LEVEL = os.getenv("LOG_LEVEL", "info")
+    LOCAL: bool = os.getenv("LOCAL", False)
+    METADATA_STORE_CONFIG = os.getenv("METADATA_STORE_CONFIG", "")
+    GIGACHAT_API_KEY = os.getenv("GIGACHAT_API_KEY", "")
+
+    """
     METADATA_STORE_CONFIG: MetadataStoreConfig
     VECTOR_DB_CONFIG: VectorDBConfig
     TFY_SERVICE_ROOT_PATH: Optional[str] = "/"
     TFY_API_KEY: str
-    OPENAI_API_KEY: Optional[str]
     GIGACHAT_API_KEY: Optional[str]
     TFY_HOST: Optional[str]
     TFY_LLM_GATEWAY_URL: str
@@ -29,21 +38,15 @@ class Settings(BaseSettings):
     JOB_FQN = os.getenv("JOB_FQN", "")
     JOB_COMPONENT_NAME = os.getenv("JOB_COMPONENT_NAME", "")
     TFY_API_KEY = os.getenv("TFY_API_KEY", "")
-    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
     GIGACHAT_API_KEY = os.getenv("OPENAI_API_KEY", "")
     TFY_HOST = os.getenv("TFY_HOST", "")
     TFY_LLM_GATEWAY_URL = os.getenv("TFY_LLM_GATEWAY_URL", "")
-    EMBEDDING_CACHE_CONFIG = (
-        EmbeddingCacheConfig.parse_obj(
-            orjson.loads(os.getenv("EMBEDDING_CACHE_CONFIG"))
-        )
-        if os.getenv("EMBEDDING_CACHE_CONFIG", None)
-        else None
-    )
+
 
     LOCAL: bool = os.getenv("LOCAL", False)
     OLLAMA_URL: str = os.getenv("OLLAMA_URL", "http://localhost:11434")
-
+    """
+    """
     if not VECTOR_DB_CONFIG:
         raise ValueError("VECTOR_DB_CONFIG is not set")
 
@@ -63,6 +66,7 @@ class Settings(BaseSettings):
         )
     except Exception as e:
         raise ValueError(f"METADATA_STORE_CONFIG is invalid: {e}")
+    """
 
 
 settings = Settings()

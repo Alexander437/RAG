@@ -1,5 +1,5 @@
 import re
-from typing import Optional
+from typing import Optional, List
 
 import fitz
 from langchain.docstore.document import Document
@@ -7,27 +7,25 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 from backend.modules.parsers.parser import BaseParser
 from backend.modules.parsers.utils import contains_text
-from backend.types import LoadedDataPoint
 
 
 class PdfParserUsingPyMuPDF(BaseParser):
     """
-    PdfParserUsingPyMuPDF is a parser class for extracting text from PDF files using PyMuPDF library.
+    PdfParserUsingPyMuPDF парсер для извлечения текста из PDF файлов, используя библиотеку PyMuPDF.
     """
 
     supported_file_extensions = [".pdf"]
 
     def __init__(self, max_chunk_size: int = 1000, *args, **kwargs):
-        """
-        Initializes the PdfParserUsingPyMuPDF object.
-        """
+        super().__init__(*args, **kwargs)
         self.max_chunk_size = max_chunk_size
 
-    async def get_chunks(
-        self, filepath: str, metadata: Optional[dict], *args, **kwargs
-    ):
+    async def get_chunks(self,
+                         filepath: str,
+                         metadata: Optional[dict],
+                         *args, **kwargs) -> List[Document]:
         """
-        Asynchronously extracts text from a PDF file and returns it in chunks.
+        Асинхронное извлечение текста из PDF файла и возвращение его в chunk'ах.
         """
         final_texts = []
         final_tables = []
@@ -58,7 +56,7 @@ class PdfParserUsingPyMuPDF(BaseParser):
 
                 # clean up text for any problematic characters
                 text = re.sub("\n", " ", text).strip()
-                text = text.encode("ascii", errors="ignore").decode("ascii")
+                # text = text.encode("ascii", errors="ignore").decode("ascii")
                 text = re.sub(r"([^\w\s])\1{4,}", " ", text)
                 text = re.sub(" +", " ", text).strip()
 

@@ -22,7 +22,7 @@ class MixBreadEmbeddings(Embeddings):
         self.embedding_ctx_length = 500
         self.chunk_size = 16
 
-    # The model works really well with cls pooling (default) but also with mean poolin.
+    # The model works really well with cls pooling (default) but also with mean pooling.
     def pooling(
         self, outputs: torch.Tensor, inputs: Dict, strategy: str = "cls"
     ) -> np.ndarray:

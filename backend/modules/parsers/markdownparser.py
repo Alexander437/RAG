@@ -1,37 +1,30 @@
-import typing
-from typing import Optional
+from typing import Optional, List
 
 from langchain.docstore.document import Document
 from langchain.text_splitter import MarkdownHeaderTextSplitter, MarkdownTextSplitter
 
 from backend.modules.parsers.parser import BaseParser
 from backend.modules.parsers.utils import contains_text
-from backend.types import LoadedDataPoint
 
 
 class MarkdownParser(BaseParser):
     """
-    Custom Markdown parser for extracting chunks from Markdown files.
+    Извлекает chunk'и из Markdown файлов
     """
 
     max_chunk_size: int
     supported_file_extensions = [".md"]
 
     def __init__(self, max_chunk_size: int = 1000, *args, **kwargs):
-        """
-        Initializes the MarkdownParser object.
-        """
+        super().__init__(*args, **kwargs)
         self.max_chunk_size = max_chunk_size
 
-    async def get_chunks(
-        self,
-        filepath: str,
-        metadata: Optional[dict] = None,
-        *args,
-        **kwargs,
-    ) -> typing.List[Document]:
+    async def get_chunks(self,
+                         filepath: str,
+                         metadata: Optional[dict] = None,
+                         *args, **kwargs) -> List[Document]:
         """
-        Extracts chunks of content from a given Markdown file.
+        Извлекает chunk'и из Markdown файлов
         """
         content = None
         with open(filepath, "r") as f:
@@ -107,7 +100,7 @@ class MarkdownParser(BaseParser):
             return chunks_arr
 
         markdown_splitter = MarkdownHeaderTextSplitter(
-            headers_to_split_on=headers_to_split_on[i : i + 1]
+            headers_to_split_on=headers_to_split_on[i: i + 1]
         )
         md_header_splits = markdown_splitter.split_text(content)
         chunks_arr = []

@@ -1,19 +1,17 @@
 import os
 import re
-import typing
-from typing import Optional
+from typing import Optional, List
 
 from langchain.docstore.document import Document
 from langchain.text_splitter import Language, RecursiveCharacterTextSplitter
 
 from backend.modules.parsers.parser import BaseParser
 from backend.modules.parsers.utils import contains_text
-from backend.types import LoadedDataPoint
 
 
 class CodeParser(BaseParser):
     """
-    CodeParser is a parser class for processing code files.
+    Класс для обработки файлов с кодом
     """
 
     supported_file_extensions = [
@@ -54,16 +52,15 @@ class CodeParser(BaseParser):
     }
 
     def __init__(self, max_chunk_size: int = 1000, *args, **kwargs):
-        """
-        Initializes the CodeParser object.
-        """
+        super().__init__(*args, **kwargs)
         self.max_chunk_size = max_chunk_size
 
-    async def get_chunks(
-        self, filepath: str, metadata: Optional[dict], *args, **kwargs
-    ) -> typing.List[Document]:
+    async def get_chunks(self,
+                         filepath: str,
+                         metadata: Optional[dict],
+                         *args, **kwargs) -> List[Document]:
         """
-        Asynchronously loads the text from a text file and returns it in chunks.
+        Асинхронная загрузка текста из файла и возвращение его в chunk'ах.
         """
         content = None
         _, file_extension = os.path.splitext(filepath)
@@ -80,7 +77,7 @@ class CodeParser(BaseParser):
 
         # clean up text for any problematic characters
         content = re.sub("\n", " ", content).strip()
-        content = content.encode("ascii", errors="ignore").decode("ascii")
+        # content = content.encode("ascii", errors="ignore").decode("ascii")
         content = re.sub(r"([^\w\s])\1{4,}", " ", content)
         content = re.sub(" +", " ", content).strip()
 

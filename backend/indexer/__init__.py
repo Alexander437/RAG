@@ -3,7 +3,7 @@
 новых данных в коллекцию.
 
 ```bash
-python3 backend/indexer/main.py --collection_name example_collction --data_source_fqn "tests/data_example/Постановление Правительства РФ от 16.03.2009 N 228 (ред. от.pdf" \
+python3 backend/indexer/main.py --collection_name example_collction --data_source_fqn "tests/data_example/Постановление Правительства РФ от 16.03.2009 N 228.pdf" \
 --data_ingestion_mode FULL
 ```
 """

@@ -18,7 +18,7 @@ db.create_collection("example_collection", embedder)
 db.get_collections()
 client = db.get_vector_client()
 # ...
-res = parser.get_chunks("tests/data_example/Постановление Правительства РФ от 16.03.2009 N 228 (ред. от.pdf", metadata=dict())
+res = parser.get_chunks("tests/data_example/Постановление Правительства РФ от 16.03.2009 N 228.pdf", metadata=dict())
 doc = asyncio.run(res)
 db.upsert_documents("example_collection", doc, embedder)
 # ? как читать, но в GUI видно, что вставились

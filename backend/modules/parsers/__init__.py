@@ -9,7 +9,7 @@ from backend.modules.parsers.parser import get_parser_for_extension
 
 parser = get_parser_for_extension(".pdf", parsers_map=dict())
 # Или parser = get_parser_for_extension(".pdf", parsers_map={".pdf": "PdfParserFast"})
-res = parser.get_chunks("tests/data_example/Постановление Правительства РФ от 16.03.2009 N 228 (ред. от.pdf", metadata=dict())
+res = parser.get_chunks("tests/data_example/Постановление Правительства РФ от 16.03.2009 N 228.pdf", metadata=dict())
 doc = asyncio.run(res)
 ```
 """

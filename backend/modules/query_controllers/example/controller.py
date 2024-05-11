@@ -41,14 +41,17 @@ from backend.settings import settings
 EXAMPLES = {
     # "vector-store-similarity": QUERY_WITH_VECTOR_STORE_RETRIEVER_PAYLOAD,
     # "vector-store-similarity-threshold": QUERY_WITH_VECTOR_STORE_RETRIEVER_SIMILARITY_SCORE_PAYLOAD,
-    "contexual-compression-similarity": QUERY_WITH_CONTEXTUAL_COMPRESSION_RETRIEVER_PAYLOAD,
-    "contexual-compression-similarity-threshold": QUERY_WITH_CONTEXTUAL_COMPRESSION_RETRIEVER_SEARCH_TYPE_SIMILARITY_WITH_SCORE_PAYLOAD,
-    "contexual-compression-multi-query-similarity": QUERY_WITH_CONTEXTUAL_COMPRESSION_MULTI_QUERY_RETRIEVER_SIMILARITY_PAYLOAD,
+
+    # Search + re-ranking
+    "contextual-compression-similarity": QUERY_WITH_CONTEXTUAL_COMPRESSION_RETRIEVER_PAYLOAD,
+    "contextual-compression-similarity-threshold": QUERY_WITH_CONTEXTUAL_COMPRESSION_RETRIEVER_SEARCH_TYPE_SIMILARITY_WITH_SCORE_PAYLOAD,
+    # Multi-query + search + re-ranking
+    "contextual-compression-multi-query-similarity": QUERY_WITH_CONTEXTUAL_COMPRESSION_MULTI_QUERY_RETRIEVER_SIMILARITY_PAYLOAD,
     "contextual-compression-multi-query-similarity-threshold": QUERY_WITH_CONTEXTUAL_COMPRESSION_MULTI_QUERY_RETRIEVER_SIMILARITY_SCORE_PAYLOAD,
     # Keeping these for future use:
-    # "contexual-compression-similarity-threshold": QUERY_WITH_CONTEXTUAL_COMPRESSION_RETRIEVER_SEARCH_TYPE_SIMILARITY_WITH_SCORE_PAYLOAD,
+    # "contextual-compression-similarity-threshold": QUERY_WITH_CONTEXTUAL_COMPRESSION_RETRIEVER_SEARCH_TYPE_SIMILARITY_WITH_SCORE_PAYLOAD,
     # "vector-store-mmr": QUERY_WITH_VECTOR_STORE_RETRIEVER_MMR_PAYLOAD,
-    # "contexual-compression-similarity": QUERY_WITH_CONTEXTUAL_COMPRESSION_RETRIEVER_PAYLOAD,
+    # "contextual-compression-similarity": QUERY_WITH_CONTEXTUAL_COMPRESSION_RETRIEVER_PAYLOAD,
     # "multi-query-mmr": QUERY_WITH_MULTI_QUERY_RETRIEVER_MMR_PAYLOAD,
 }
 
@@ -56,8 +59,8 @@ EXAMPLES = {
 # if settings.LOCAL:
 #     EXAMPLES.update(
 #         {
-#             "contexual-compression-similarity": QUERY_WITH_CONTEXTUAL_COMPRESSION_RETRIEVER_PAYLOAD,
-#             "contexual-compression-multi-query-similarity": QUERY_WITH_CONTEXTUAL_COMPRESSION_MULTI_QUERY_RETRIEVER_SIMILARITY_PAYLOAD,
+#             "contextual-compression-similarity": QUERY_WITH_CONTEXTUAL_COMPRESSION_RETRIEVER_PAYLOAD,
+#             "contextual-compression-multi-query-similarity": QUERY_WITH_CONTEXTUAL_COMPRESSION_MULTI_QUERY_RETRIEVER_SIMILARITY_PAYLOAD,
 #             "multi-query-similarity": QUERY_WITH_MULTI_QUERY_RETRIEVER_SIMILARITY_PAYLOAD,
 #             "multi-query-similarity-threshold": QUERY_WITH_MULTI_QUERY_RETRIEVER_SIMILARITY_SCORE_PAYLOAD,
 #         }
@@ -66,20 +69,6 @@ EXAMPLES = {
 
 @query_controller("/example-app")
 class ExampleQueryController:
-    def _get_prompt_template(self, input_variables, template):
-        """
-        Возвращает prompt-шаблон
-        """
-        return PromptTemplate(input_variables=input_variables, template=template)
-
-    def _format_docs(self, docs):
-        return "\n\n".join(doc.page_content for doc in docs)
-
-    def _format_docs_for_stream(self, docs):
-        return [
-            {"page_content": doc.page_content, "metadata": doc.metadata} for doc in docs
-        ]
-
     def _get_llm(self, model_configuration, stream=False):
         """
         Возвращает объект LLM
@@ -105,6 +94,20 @@ class ExampleQueryController:
                 system=system,
             )
         return llm
+
+    def _get_prompt_template(self, input_variables, template):
+        """
+        Возвращает prompt-шаблон
+        """
+        return PromptTemplate(input_variables=input_variables, template=template)
+
+    def _format_docs(self, docs):
+        return "\n\n".join(doc.page_content for doc in docs)
+
+    def _format_docs_for_stream(self, docs):
+        return [
+            {"page_content": doc.page_content, "metadata": doc.metadata} for doc in docs
+        ]
 
     async def _get_vector_store(self, collection_name: str):
         """
@@ -164,7 +167,7 @@ class ExampleQueryController:
             base_retriever = self._get_vector_store_retriever(
                 vector_store, retriever_config
             )
-        elif retriever_type == "contexual-compression":
+        else:  # elif retriever_type == "contextual-compression":
             base_retriever = self._get_contextual_compression_retriever(
                 vector_store, retriever_config
             )
@@ -184,7 +187,7 @@ class ExampleQueryController:
             )
             retriever = self._get_vector_store_retriever(vector_store, retriever_config)
 
-        elif retriever_name == "contexual-compression":
+        elif retriever_name == "contextual-compression":
             logger.debug(
                 f"Using ContextualCompressionRetriever with {retriever_config.search_type} search"
             )
@@ -198,12 +201,12 @@ class ExampleQueryController:
             )
             retriever = self._get_multi_query_retriever(vector_store, retriever_config)
 
-        elif retriever_name == "contexual-compression-multi-query":
+        elif retriever_name == "contextual-compression-multi-query":
             logger.debug(
-                f"Using MultiQueryRetriever with {retriever_config.search_type} search and retriever type as contexual-compression"
+                f"Using MultiQueryRetriever with {retriever_config.search_type} search and retriever type as contextual-compression"
             )
             retriever = self._get_multi_query_retriever(
-                vector_store, retriever_config, retriever_type="contexual-compression"
+                vector_store, retriever_config, retriever_type="contextual-compression"
             )
 
         else:

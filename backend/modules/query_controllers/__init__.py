@@ -1,45 +1,50 @@
 """
 Использование LLM для ответа на вопросы
-
-Похоже, пока filter для metadata будет работать только с QdrantFilter
-
+`POST /answer`
 API:
 ```python
- # Streaming Client
-import httpx
-from httpx import Timeout
+import asyncio
 
+from backend.modules.query_controllers import ExampleQueryController
 from backend.modules.query_controllers.example.types import ExampleQueryInput
 
-payload = {
-  "collection_name": "test",
-  "query": "Какие преимущества у Diners club black metal edition?",
-  "model_configuration": {
-  "name": "openai-devtest/gpt-3-5-turbo",
-    "parameters": {
-      "temperature": 0.1
+# You can try different payload examples from `backend.modules.query_controllers.example.payload`
+request = {
+    "collection_name": "example",
+    "query": "Какие нормативно-правовые документы регламентируют политику в области связи?",
+    "model_configuration": {
+        "name": "ollama/gemma:2b",
+        "provider": "ollama",
+        "parameters": {"temperature": 0.1},
     },
-    "provider": "truefoundry"
-  },
-  "prompt_template": "Answer the question based only on the following context:\nContext: {context} \nQuestion: {question}",
-  "retriever_name": "vectorstore",
-  "retriever_config": {
-    "search_type": "similarity",
-    "search_kwargs": {
-      "k": 20
+    "prompt_template": "Ответ на вопрос дайте, опираясь только на следующий контекст:\nКонтекст: {context} \nВопрос: {question}",
+    "retriever_name": "contexual-compression-multi-query",
+    "retriever_config": {
+        "compressor_model_provider": "mixbread-ai",
+        "compressor_model_name": "mixedbread-ai/mxbai-rerank-xsmall-v1",
+        "top_k": 7,
+        "search_type": "similarity",
+        "search_kwargs": {
+            "k": 20,
+        },
+        "retriever_llm_configuration": {
+            "name": "ollama/gemma:2b",
+            "provider": "ollama",
+            "parameters": {"temperature": 0.9},
+        },
     },
-    "filter": {}
-  },
-  "stream": True
+    "stream": False,
 }
+# You can change the query here
+# print(f"Payload: {request}")
 
-data = ExampleQueryInput(**payload).dict()
-ENDPOINT_URL = 'http://localhost:8000/retrievers/example-app/answer'
+# Create a controller object
+controller = ExampleQueryController()
 
-
-with httpx.stream('POST', ENDPOINT_URL, json=data, timeout=Timeout(5.0*60)) as r:
-    for chunk in r.iter_text():
-        print(chunk)
+# Get the answer
+answer = asyncio.run(controller.answer(ExampleQueryInput(**request)))
+print(f"Answer: {answer.get('answer')}")
+# print(f"Docs: {answer.get('docs')}")
 ```
 """
 from backend.modules.query_controllers.example.controller import ExampleQueryController

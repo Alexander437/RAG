@@ -35,7 +35,7 @@ collection = METADATA_STORE_CLIENT.get_collection_by_name(
     "example", no_cache=True
 )
 
-data_source = METADATA_STORE_CLIENT.get_data_source_from_fqn(fqn="tests/data_example/Постановление Правительства РФ от 16.03.2009 N 228 (ред. от.pdf")
+data_source = METADATA_STORE_CLIENT.get_data_source_from_fqn(fqn="tests/data_example/Постановление Правительства РФ от 16.03.2009 N 228.pdf")
 associated_data_source = collection.associated_data_sources.get(data_source.fqn)
 
 METADATA_STORE_CLIENT.update_data_ingestion_run_status(

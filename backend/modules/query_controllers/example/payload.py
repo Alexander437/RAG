@@ -1,35 +1,35 @@
 QUERY_WITH_VECTOR_STORE_RETRIEVER_SIMILARITY = {
-    "collection_name": "Кредитная карта",
-    "query": "Подробно объясните различные категории кредитных карт.",
+    "collection_name": "example",
+    "query": "Что говорится в Конституции по поводу защиты информации?",
     "model_configuration": {
         "name": "openai-main/gpt-3-5-turbo",
         "provider": "truefoundry",
         "parameters": {"temperature": 0.1},
     },
-    "prompt_template": "Ответ на вопрос дай опираясь только на следующий контекст:\nКонтекст: {context} \nВпрос: {question}",
+    "prompt_template": "Ответ на вопрос дайте, опираясь только на следующий контекст:\nКонтекст: {context} \nВопрос: {question}",
     "retriever_name": "vectorstore",
     "retriever_config": {"search_type": "similarity", "search_kwargs": {"k": 5}},
     "stream": False,
 }
 
 QUERY_WITH_VECTOR_STORE_RETRIEVER_PAYLOAD = {
-    "summary": "search with similarity",
+    "summary": "поиск на основании близости",
     "description": """
-        Requires k in search_kwargs for similarity search.
-        search_type can either be similarity or mmr or similarity_score_threshold.""",
+        Требует k в search_kwargs для поиска по близости.
+        search_type может быть similarity, mmr или similarity_score_threshold.""",
     "value": QUERY_WITH_VECTOR_STORE_RETRIEVER_SIMILARITY,
 }
 #######
 
 QUERY_WITH_VECTOR_STORE_RETRIEVER_MMR = {
-    "collection_name": "creditcard",
-    "query": "Explain in detail different categories of credit cards",
+    "collection_name": "example",
+    "query": "Расскажи в деталях все виды ответственности, связанные с утечками персональных данных",
     "model_configuration": {
         "name": "openai-main/gpt-3-5-turbo",
         "provider": "truefoundry",
         "parameters": {"temperature": 0.1},
     },
-    "prompt_template": "Answer the question based only on the following context:\nContext: {context} \nQuestion: {question}",
+    "prompt_template": "Ответ на вопрос дайте, опираясь только на следующий контекст:\nКонтекст: {context} \nВопрос: {question}",
     "retriever_name": "vectorstore",
     "retriever_config": {
         "search_type": "mmr",
@@ -42,23 +42,23 @@ QUERY_WITH_VECTOR_STORE_RETRIEVER_MMR = {
 }
 
 QUERY_WITH_VECTOR_STORE_RETRIEVER_MMR_PAYLOAD = {
-    "summary": "search with mmr",
+    "summary": "Поиск с mmr",
     "description": """
-        Requires k and fetch_k in search_kwargs for mmr support depends on vector db.
-        search_type can either be similarity or mmr or similarity_score_threshold""",
+        Требуется k и fetch_k в search_kwargs для поддержки mmr в зависимости от векторной БД.
+        search_type может быть similarity, mmr или similarity_score_threshold""",
     "value": QUERY_WITH_VECTOR_STORE_RETRIEVER_MMR,
 }
 #######
 
 QUERY_WITH_VECTOR_STORE_RETRIEVER_SIMILARITY_SCORE = {
-    "collection_name": "creditcard",
-    "query": "Explain in detail different categories of credit cards",
+    "collection_name": "example",
+    "query": "Расскажи в деталях все виды ответственности, связанные с утечками персональных данных",
     "model_configuration": {
         "name": "openai-main/gpt-3-5-turbo",
         "provider": "truefoundry",
         "parameters": {"temperature": 0.1},
     },
-    "prompt_template": "Answer the question based only on the following context:\nContext: {context} \nQuestion: {question}",
+    "prompt_template": "Ответ на вопрос дайте, опираясь только на следующий контекст:\nКонтекст: {context} \nВопрос: {question}",
     "retriever_name": "vectorstore",
     "retriever_config": {
         "search_type": "similarity_score_threshold",
@@ -68,23 +68,23 @@ QUERY_WITH_VECTOR_STORE_RETRIEVER_SIMILARITY_SCORE = {
 }
 
 QUERY_WITH_VECTOR_STORE_RETRIEVER_SIMILARITY_SCORE_PAYLOAD = {
-    "summary": "search with threshold score",
+    "summary": "Поиск с учетом порога по score",
     "description": """
-        Requires score_threshold float (0~1) in search kwargs.
-        search_type can either be similarity or mmr or similarity_score_threshold.""",
+        Требуется score_threshold: float (0~1) в search_kwargs.
+        search_type может быть similarity, mmr или similarity_score_threshold.""",
     "value": QUERY_WITH_VECTOR_STORE_RETRIEVER_SIMILARITY_SCORE,
 }
 #######
 
 QUERY_WITH_CONTEXTUAL_COMPRESSION_RETRIEVER = {
-    "collection_name": "creditcard",
-    "query": "Explain in detail different categories of credit cards",
+    "collection_name": "example",
+    "query": "Расскажи в деталях все виды ответственности, связанные с утечками персональных данных",
     "model_configuration": {
         "name": "openai-main/gpt-3-5-turbo",
         "provider": "truefoundry",
         "parameters": {"temperature": 0.1},
     },
-    "prompt_template": "Answer the question based only on the following context:\nContext: {context} \nQuestion: {question}",
+    "prompt_template": "Ответ на вопрос дайте, опираясь только на следующий контекст:\nКонтекст: {context} \nВопрос: {question}",
     "retriever_name": "contexual-compression",
     "retriever_config": {
         "compressor_model_provider": "mixbread-ai",
@@ -97,24 +97,25 @@ QUERY_WITH_CONTEXTUAL_COMPRESSION_RETRIEVER = {
 }
 
 QUERY_WITH_CONTEXTUAL_COMPRESSION_RETRIEVER_PAYLOAD = {
-    "summary": "similarity search + re-ranking",
+    "summary": "Поиск по близости + re-ranking",
     "description": """
-        Requires k in search_kwargs for similarity search.
-        search_type can either be similarity or mmr or similarity_score_threshold.""",
+        Требуется k в search_kwargs для поиска по близости.
+        search_type может быть similarity, mmr или similarity_score_threshold.
+        Поддерживается только при использовании reranker'а mixedbread-ai/mxbai-rerank-xsmall-v1.""",
     "value": QUERY_WITH_CONTEXTUAL_COMPRESSION_RETRIEVER,
 }
 #####
 
 
 QUERY_WITH_CONTEXTUAL_COMPRESSION_RETRIEVER_SEARCH_TYPE_MMR = {
-    "collection_name": "creditcard",
-    "query": "Explain in detail different categories of credit cards",
+    "collection_name": "example",
+    "query": "Расскажи в деталях все виды ответственности, связанные с утечками персональных данных",
     "model_configuration": {
         "name": "openai-main/gpt-3-5-turbo",
         "provider": "truefoundry",
         "parameters": {"temperature": 0.1},
     },
-    "prompt_template": "Answer the question based only on the following context:\nContext: {context} \nQuestion: {question}",
+    "prompt_template": "Ответ на вопрос дайте, опираясь только на следующий контекст:\nКонтекст: {context} \nВопрос: {question}",
     "retriever_name": "contexual-compression",
     "retriever_config": {
         "compressor_model_provider": "mixbread-ai",
@@ -132,9 +133,9 @@ QUERY_WITH_CONTEXTUAL_COMPRESSION_RETRIEVER_SEARCH_TYPE_MMR = {
 QUERY_WITH_CONTEXTUAL_COMPRESSION_RETRIEVER_SEARCH_TYPE_MMR_PAYLOAD = {
     "summary": "mmr + re-ranking",
     "description": """
-        Requires k and fetch_k in search kwargs for mmr.
-        search_type can either be similarity or mmr or similarity_score_threshold.
-        Currently only support for mixedbread-ai/mxbai-rerank-xsmall-v1 reranker is added.""",
+        Требуется k и fetch_k в search kwargs для mmr.
+        search_type может быть similarity, mmr или similarity_score_threshold.
+        Поддерживается только при использовании reranker'а mixedbread-ai/mxbai-rerank-xsmall-v1.""",
     "value": QUERY_WITH_CONTEXTUAL_COMPRESSION_RETRIEVER_SEARCH_TYPE_MMR,
 }
 
@@ -142,14 +143,14 @@ QUERY_WITH_CONTEXTUAL_COMPRESSION_RETRIEVER_SEARCH_TYPE_MMR_PAYLOAD = {
 
 
 QUERY_WITH_CONTEXTUAL_COMPRESSION_RETRIEVER_SEARCH_TYPE_SIMILARITY_WITH_SCORE = {
-    "collection_name": "creditcard",
-    "query": "Explain in detail different categories of credit cards",
+    "collection_name": "example",
+    "query": "Расскажи в деталях все виды ответственности, связанные с утечками персональных данных",
     "model_configuration": {
         "name": "openai-main/gpt-3-5-turbo",
         "provider": "truefoundry",
         "parameters": {"temperature": 0.1},
     },
-    "prompt_template": "Answer the question based only on the following context:\nContext: {context} \nQuestion: {question}",
+    "prompt_template": "Ответ на вопрос дайте, опираясь только на следующий контекст:\nКонтекст: {context} \nВопрос: {question}",
     "retriever_name": "contexual-compression",
     "retriever_config": {
         "compressor_model_provider": "mixbread-ai",
@@ -162,25 +163,25 @@ QUERY_WITH_CONTEXTUAL_COMPRESSION_RETRIEVER_SEARCH_TYPE_SIMILARITY_WITH_SCORE = 
 }
 
 QUERY_WITH_CONTEXTUAL_COMPRESSION_RETRIEVER_SEARCH_TYPE_SIMILARITY_WITH_SCORE_PAYLOAD = {
-    "summary": "threshold score + re-ranking",
+    "summary": "Порог по score + re-ranking",
     "description": """
-        Requires score_threshold float (0~1) in search kwargs for similarity search.
-        search_type can either be similarity or mmr or similarity_score_threshold.
-        Currently only support for mixedbread-ai/mxbai-rerank-xsmall-v1 reranker is added""",
+        Требуется score_threshold: float (0~1) в search_kwargs для поиска по близости.
+        search_type может быть similarity, mmr или similarity_score_threshold.
+        Поддерживается только при использовании reranker'а mixedbread-ai/mxbai-rerank-xsmall-v1.""",
     "value": QUERY_WITH_CONTEXTUAL_COMPRESSION_RETRIEVER_SEARCH_TYPE_SIMILARITY_WITH_SCORE,
 }
 
 #####
 
 QUERY_WITH_MULTI_QUERY_RETRIEVER_SIMILARITY = {
-    "collection_name": "creditcard",
-    "query": "Explain in detail different categories of credit cards",
+    "collection_name": "example",
+    "query": "Расскажи в деталях все виды ответственности, связанные с утечками персональных данных",
     "model_configuration": {
         "name": "openai-main/gpt-3-5-turbo",
         "provider": "truefoundry",
         "parameters": {"temperature": 0.1},
     },
-    "prompt_template": "Answer the question based only on the following context:\nContext: {context} \nQuestion: {question}",
+    "prompt_template": "Ответ на вопрос дайте, опираясь только на следующий контекст:\nКонтекст: {context} \nВопрос: {question}",
     "retriever_name": "multi-query",
     "retriever_config": {
         "search_type": "similarity",
@@ -195,24 +196,24 @@ QUERY_WITH_MULTI_QUERY_RETRIEVER_SIMILARITY = {
 }
 
 QUERY_WITH_MULTI_QUERY_RETRIEVER_SIMILARITY_PAYLOAD = {
-    "summary": "multi-query + similarity search",
+    "summary": "multi-query + поиск по близости",
     "description": """
-        Typically used for complex user queries.
-        search_type can either be similarity or mmr or similarity_score_threshold.""",
+        Используется для сложных пользовательских запросов.
+        search_type может быть similarity, mmr или similarity_score_threshold.""",
     "value": QUERY_WITH_MULTI_QUERY_RETRIEVER_SIMILARITY,
 }
 #######
 
 
 QUERY_WITH_MULTI_QUERY_RETRIEVER_MMR = {
-    "collection_name": "creditcard",
-    "query": "Explain in detail different categories of credit cards",
+    "collection_name": "example",
+    "query": "Расскажи в деталях все виды ответственности, связанные с утечками персональных данных",
     "model_configuration": {
         "name": "openai-main/gpt-3-5-turbo",
         "provider": "truefoundry",
         "parameters": {"temperature": 0.1},
     },
-    "prompt_template": "Answer the question based only on the following context:\nContext: {context} \nQuestion: {question}",
+    "prompt_template": "Ответ на вопрос дайте, опираясь только на следующий контекст:\nКонтекст: {context} \nВопрос: {question}",
     "retriever_name": "multi-query",
     "retriever_config": {
         "search_type": "mmr",
@@ -232,21 +233,21 @@ QUERY_WITH_MULTI_QUERY_RETRIEVER_MMR = {
 QUERY_WITH_MULTI_QUERY_RETRIEVER_MMR_PAYLOAD = {
     "summary": "multi-query + mmr",
     "description": """
-        Requires k and fetch_k in search_kwargs for mmr.
-        search_type can either be similarity or mmr or similarity_score_threshold.""",
+        Требуется k и fetch_k в search_kwargs для mmr.
+        search_type может быть similarity, mmr или similarity_score_threshold.""",
     "value": QUERY_WITH_MULTI_QUERY_RETRIEVER_MMR,
 }
 #######
 
 QUERY_WITH_MULTI_QUERY_RETRIEVER_SIMILARITY_SCORE = {
-    "collection_name": "creditcard",
-    "query": "Explain in detail different categories of credit cards",
+    "collection_name": "example",
+    "query": "Расскажи в деталях все виды ответственности, связанные с утечками персональных данных",
     "model_configuration": {
         "name": "openai-main/gpt-3-5-turbo",
         "provider": "truefoundry",
         "parameters": {"temperature": 0.1},
     },
-    "prompt_template": "Answer the question based only on the following context:\nContext: {context} \nQuestion: {question}",
+    "prompt_template": "Ответ на вопрос дайте, опираясь только на следующий контекст:\nКонтекст: {context} \nВопрос: {question}",
     "retriever_name": "multi-query",
     "retriever_config": {
         "search_type": "similarity_score_threshold",
@@ -261,25 +262,25 @@ QUERY_WITH_MULTI_QUERY_RETRIEVER_SIMILARITY_SCORE = {
 }
 
 QUERY_WITH_MULTI_QUERY_RETRIEVER_SIMILARITY_SCORE_PAYLOAD = {
-    "summary": "multi-query + threshold score",
+    "summary": "multi-query + порог по score",
     "description": """
-        Typically used for complex user queries.
-        Requires score_threshold float (0~1) in search kwargs.
-        search_type can either be similarity or mmr or similarity_score_threshold.""",
+        Обычно используется для сложных пользовательских запросов.
+        Требуется score_threshold: float (0~1) в search kwargs.
+        search_type может быть similarity, mmr или similarity_score_threshold.""",
     "value": QUERY_WITH_MULTI_QUERY_RETRIEVER_SIMILARITY_SCORE,
 }
 #######
 
 
 QUERY_WITH_CONTEXTUAL_COMPRESSION_MULTI_QUERY_RETRIEVER_MMR = {
-    "collection_name": "creditcard",
-    "query": "Explain in detail different categories of credit cards",
+    "collection_name": "example",
+    "query": "Расскажи в деталях все виды ответственности, связанные с утечками персональных данных",
     "model_configuration": {
         "name": "openai-main/gpt-3-5-turbo",
         "provider": "truefoundry",
         "parameters": {"temperature": 0.1},
     },
-    "prompt_template": "Answer the question based only on the following context:\nContext: {context} \nQuestion: {question}",
+    "prompt_template": "Ответ на вопрос дайте, опираясь только на следующий контекст:\nКонтекст: {context} \nВопрос: {question}",
     "retriever_name": "contexual-compression-multi-query",
     "retriever_config": {
         "compressor_model_provider": "mixbread-ai",
@@ -300,24 +301,24 @@ QUERY_WITH_CONTEXTUAL_COMPRESSION_MULTI_QUERY_RETRIEVER_MMR = {
 }
 
 QUERY_WITH_CONTEXTUAL_COMPRESSION_MULTI_QUERY_RETRIEVER_MMR_PAYLOAD = {
-    "summary": "multi-query + re-ranking +  mmr",
+    "summary": "multi-query + re-ranking + mmr",
     "description": """
-        Typically used for complex user queries.
-        Requires k and fetch_k in search_kwargs for mmr.
-        search_type can either be similarity or mmr or similarity_score_threshold.""",
+        Обычно используется для сложных пользовательских запросов.
+        Требуется k и fetch_k в search_kwargs для mmr.
+        search_type может быть similarity, mmr или similarity_score_threshold.""",
     "value": QUERY_WITH_CONTEXTUAL_COMPRESSION_MULTI_QUERY_RETRIEVER_MMR,
 }
 #######
 
 QUERY_WITH_CONTEXTUAL_COMPRESSION_MULTI_QUERY_RETRIEVER_SIMILARITY = {
-    "collection_name": "creditcard",
-    "query": "Explain in detail different categories of credit cards",
+    "collection_name": "example",
+    "query": "Расскажи в деталях все виды ответственности, связанные с утечками персональных данных",
     "model_configuration": {
         "name": "openai-main/gpt-3-5-turbo",
         "provider": "truefoundry",
         "parameters": {"temperature": 0.1},
     },
-    "prompt_template": "Answer the question based only on the following context:\nContext: {context} \nQuestion: {question}",
+    "prompt_template": "Ответ на вопрос дайте, опираясь только на следующий контекст:\nКонтекст: {context} \nВопрос: {question}",
     "retriever_name": "contexual-compression-multi-query",
     "retriever_config": {
         "compressor_model_provider": "mixbread-ai",
@@ -335,24 +336,24 @@ QUERY_WITH_CONTEXTUAL_COMPRESSION_MULTI_QUERY_RETRIEVER_SIMILARITY = {
 }
 
 QUERY_WITH_CONTEXTUAL_COMPRESSION_MULTI_QUERY_RETRIEVER_SIMILARITY_PAYLOAD = {
-    "summary": "multi-query + re-ranking + similarity ",
+    "summary": "multi-query + re-ranking + поиск по близости",
     "description": """
-        Typically used for complex user queries.
-        Requires k in search_kwargs for similarity search.
-        search_type can either be similarity or mmr or similarity_score_threshold.""",
+        Обычно используется для сложных пользовательских запросов.
+        Требуется k в search_kwargs для поиска по близости.
+        search_type может быть similarity, mmr или similarity_score_threshold.""",
     "value": QUERY_WITH_CONTEXTUAL_COMPRESSION_MULTI_QUERY_RETRIEVER_SIMILARITY,
 }
 #######
 
 QUERY_WITH_CONTEXTUAL_COMPRESSION_MULTI_QUERY_RETRIEVER_SIMILARITY_SCORE = {
-    "collection_name": "creditcard",
-    "query": "Explain in detail different categories of credit cards",
+    "collection_name": "example",
+    "query": "Расскажи в деталях все виды ответственности, связанные с утечками персональных данных",
     "model_configuration": {
         "name": "openai-main/gpt-3-5-turbo",
         "provider": "truefoundry",
         "parameters": {"temperature": 0.1},
     },
-    "prompt_template": "Answer the question based only on the following context:\nContext: {context} \nQuestion: {question}",
+    "prompt_template": "Ответ на вопрос дайте, опираясь только на следующий контекст:\nКонтекст: {context} \nВопрос: {question}",
     "retriever_name": "contexual-compression-multi-query",
     "retriever_config": {
         "compressor_model_provider": "mixbread-ai",
@@ -370,11 +371,11 @@ QUERY_WITH_CONTEXTUAL_COMPRESSION_MULTI_QUERY_RETRIEVER_SIMILARITY_SCORE = {
 }
 
 QUERY_WITH_CONTEXTUAL_COMPRESSION_MULTI_QUERY_RETRIEVER_SIMILARITY_SCORE_PAYLOAD = {
-    "summary": "multi-query + re-ranking + threshold score",
+    "summary": "multi-query + re-ranking + Порог по score",
     "description": """
-        Typically used for complex user queries.
-        Requires k in search_kwargs for similarity search.
-        search_type can either be similarity or mmr or similarity_score_threshold.""",
+        Обычно используется для сложных пользовательских запросов.
+        Требуется k в search_kwargs для поиска по близости.
+        search_type может быть similarity, mmr или similarity_score_threshold.""",
     "value": QUERY_WITH_CONTEXTUAL_COMPRESSION_MULTI_QUERY_RETRIEVER_SIMILARITY_SCORE,
 }
 #######

@@ -36,7 +36,7 @@ class VectorStoreRetrieverConfig(BaseModel):
         "mmr",
     )
 
-    @root_validator
+    @root_validator()
     def validate_search_type(cls, values: Dict) -> Dict:
         """Проверка search type."""
         search_type = values.get("search_type")
@@ -61,9 +61,9 @@ class VectorStoreRetrieverConfig(BaseModel):
                 "score_threshold" in search_kwargs
             ), "score_threshold with a float value(0~1) is required in search_kwargs for similarity_score_threshold search"
 
-        # filters = values.get("filter")
-        # if filters:
-        #     search_kwargs["filter"] = QdrantFilter.parse_obj(filters)
+        filters = values.get("filter")
+        if filters:
+            search_kwargs["filter"] = QdrantFilter.parse_obj(filters)
         return values
 
 
@@ -75,15 +75,15 @@ class MultiQueryRetrieverConfig(VectorStoreRetrieverConfig):
 
 class ContextualCompressionRetrieverConfig(VectorStoreRetrieverConfig):
     compressor_model_provider: str = Field(
-        title="Поставщик compressor model",
+        title="Поставщик модели сжатия",
     )
 
     compressor_model_name: str = Field(
-        title="model name of the compressor",
+        title="Имя модели сжатия",
     )
 
     top_k: int = Field(
-        title="Top K docs to collect post compression",
+        title="Первые K документов, возвращаемые после сжатия",
     )
 
     allowed_compressor_model_providers: ClassVar[Collection[str]] = ("mixbread-ai",)
@@ -136,8 +136,8 @@ class ExampleQueryInput(BaseModel):
     allowed_retriever_types: ClassVar[Collection[str]] = (
         "vectorstore",
         "multi-query",
-        "contexual-compression",
-        "contexual-compression-multi-query",
+        "contextual-compression",
+        "contextual-compression-multi-query",
         "lord-of-the-retrievers",
     )
 
@@ -161,12 +161,12 @@ class ExampleQueryInput(BaseModel):
                 **values.get("retriever_config")
             )
 
-        elif retriever_name == "contexual-compression":
+        elif retriever_name == "contextual-compression":
             values["retriever_config"] = ContextualCompressionRetrieverConfig(
                 **values.get("retriever_config")
             )
 
-        elif retriever_name == "contexual-compression-multi-query":
+        elif retriever_name == "contextual-compression-multi-query":
             values["retriever_config"] = ContextualCompressionMultiQueryRetrieverConfig(
                 **values.get("retriever_config")
             )

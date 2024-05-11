@@ -1,12 +1,12 @@
 QUERY_WITH_VECTOR_STORE_RETRIEVER_SIMILARITY = {
-    "collection_name": "creditcard",
-    "query": "Explain in detail different categories of credit cards",
+    "collection_name": "Кредитная карта",
+    "query": "Подробно объясните различные категории кредитных карт.",
     "model_configuration": {
         "name": "openai-main/gpt-3-5-turbo",
         "provider": "truefoundry",
         "parameters": {"temperature": 0.1},
     },
-    "prompt_template": "Answer the question based only on the following context:\nContext: {context} \nQuestion: {question}",
+    "prompt_template": "Ответ на вопрос дай опираясь только на следующий контекст:\nКонтекст: {context} \nВпрос: {question}",
     "retriever_name": "vectorstore",
     "retriever_config": {"search_type": "similarity", "search_kwargs": {"k": 5}},
     "stream": False,

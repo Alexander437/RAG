@@ -254,8 +254,8 @@ class BaseDataSource(BaseModel):
     def fqn(self):
         return f"{FQN_SEPARATOR}".join([self.type, self.uri])
 
-    # @root_validator  # @model_validator(mode="after")
-    def validate_fqn(self, values: Dict) -> Dict:
+    @root_validator()  # @model_validator(mode="after")
+    def validate_fqn(cls, values: Dict) -> Dict:
         values["fqn"] = f"{FQN_SEPARATOR}".join([values["type"], values["uri"]])
         return values
 

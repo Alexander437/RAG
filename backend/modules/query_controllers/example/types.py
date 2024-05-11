@@ -1,4 +1,4 @@
-from typing import Any, ClassVar, Collection, Dict, Literal, Optional
+from typing import Any, ClassVar, Collection, Dict, Optional
 
 from pydantic import BaseModel, Field, root_validator, validator
 from qdrant_client.models import Filter as QdrantFilter
@@ -10,15 +10,16 @@ GENERATION_TIMEOUT_SEC = 60.0 * 5
 
 class VectorStoreRetrieverConfig(BaseModel):
     """
-    Configuration for VectorStore Retriever
+    Конфигурация VectorStore Retriever
     """
 
     search_type: str = Field(
         default="similarity",
-        title="""Defines the type of search that the Retriever should perform. Can be 'similarity' (default), 'mmr', or 'similarity_score_threshold'.
-            - "similarity": Retrieve the top k most similar documents to the query.,
-            - "mmr": Retrieve the top k most similar documents to the query and then rerank them using Maximal Marginal Relevance (MMR).,
-            - "similarity_score_threshold": Retrieve all documents with similarity score greater than a threshold.
+        title="""Определяет тип поиска, который реализует Retriever. Может быть 'similarity' (по умолчанию), 'mmr', или
+          'similarity_score_threshold'.
+            - "similarity": возвращает первые k ближайших к запросу,
+            - "mmr": возвращает первые k ближайших к запросу и ранжирует их в соответствии с алгоритмом MMR,
+            - "similarity_score_threshold": возвращает все документы, близость которых превышает порог
         """,
     )
 
@@ -26,7 +27,7 @@ class VectorStoreRetrieverConfig(BaseModel):
 
     filter: Optional[dict] = Field(
         default_factory=dict,
-        title="""Filter by document metadata""",
+        title="""Фильтрация по метаданным документа""",
     )
 
     allowed_search_types: ClassVar[Collection[str]] = (
@@ -37,7 +38,7 @@ class VectorStoreRetrieverConfig(BaseModel):
 
     @root_validator
     def validate_search_type(cls, values: Dict) -> Dict:
-        """Validate search type."""
+        """Проверка search type."""
         search_type = values.get("search_type")
 
         assert (
@@ -60,21 +61,21 @@ class VectorStoreRetrieverConfig(BaseModel):
                 "score_threshold" in search_kwargs
             ), "score_threshold with a float value(0~1) is required in search_kwargs for similarity_score_threshold search"
 
-        filters = values.get("filter")
-        if filters:
-            search_kwargs["filter"] = QdrantFilter.parse_obj(filters)
+        # filters = values.get("filter")
+        # if filters:
+        #     search_kwargs["filter"] = QdrantFilter.parse_obj(filters)
         return values
 
 
 class MultiQueryRetrieverConfig(VectorStoreRetrieverConfig):
     retriever_llm_configuration: LLMConfig = Field(
-        title="LLM configuration for the retriever",
+        title="LLM конфигурация для retriever",
     )
 
 
 class ContextualCompressionRetrieverConfig(VectorStoreRetrieverConfig):
     compressor_model_provider: str = Field(
-        title="provider of the compressor model",
+        title="Поставщик compressor model",
     )
 
     compressor_model_name: str = Field(
@@ -107,21 +108,21 @@ class LordOfRetrievers(ContextualCompressionRetrieverConfig, MultiQueryRetriever
 
 class ExampleQueryInput(BaseModel):
     """
-    Model for Query input.
-    Requires a collection name, retriever configuration, query, LLM configuration and prompt template.
+    Модель для ввода запросов.
+    Требует указания collection name, retriever configuration, query, LLM configuration и prompt template.
     """
 
     collection_name: str = Field(
         default=None,
-        title="Collection name on which to search",
+        title="Имя коллекции, по которой проводится поиск",
     )
 
-    query: str = Field(title="Question to search for")
+    query: str = Field(title="Запрос для поиска")
 
     model_configuration: LLMConfig
 
     prompt_template: str = Field(
-        title="Prompt Template to use for generating answer to the question using the context",
+        title="Шаблон для промпта для генерации ответа с учетом контекста",
     )
 
     retriever_name: str = Field(
@@ -129,7 +130,7 @@ class ExampleQueryInput(BaseModel):
     )
 
     retriever_config: Dict[str, Any] = Field(
-        title="Retriever configuration",
+        title="Конфигурация Retriever",
     )
 
     allowed_retriever_types: ClassVar[Collection[str]] = (

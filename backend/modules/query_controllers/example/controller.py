@@ -10,12 +10,10 @@ from langchain.schema.vectorstore import VectorStoreRetriever
 from langchain_community.chat_models.ollama import ChatOllama
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnableParallel, RunnablePassthrough
-# from langchain_openai.chat_models import ChatOpenAI
 from langchain_community.chat_models import GigaChat
-from truefoundry.langchain import TrueFoundryChat
 
 from backend.logger import logger
-from backend.modules.embedder.embedder import get_embedder
+from backend.modules.embedders.embedder import get_embedder
 from backend.modules.metadata_store.client import METADATA_STORE_CLIENT
 from backend.modules.query_controllers.example.payload import (
     QUERY_WITH_CONTEXTUAL_COMPRESSION_MULTI_QUERY_RETRIEVER_MMR_PAYLOAD,
@@ -54,6 +52,7 @@ EXAMPLES = {
     # "multi-query-mmr": QUERY_WITH_MULTI_QUERY_RETRIEVER_MMR_PAYLOAD,
 }
 
+
 # if settings.LOCAL:
 #     EXAMPLES.update(
 #         {
@@ -86,13 +85,6 @@ class ExampleQueryController:
         Возвращает объект LLM
         """
         system = "You are a helpful assistant."
-        # if model_configuration.provider == "openai":
-        #     logger.debug(f"Using OpenAI model {model_configuration.name}")
-        #     llm = ChatOpenAI(
-        #         model=model_configuration.name,
-        #         temperature=model_configuration.parameters.get("temperature", 0.1),
-        #         streaming=stream,
-        #     )
         if model_configuration.provider == "gigachat":
             logger.debug(f"Using GigaChat model {model_configuration.name}")
             llm = GigaChat(
@@ -100,7 +92,7 @@ class ExampleQueryController:
                 temperature=model_configuration.parameters.get("temperature", 0.1),
                 streaming=stream,
             )
-        elif model_configuration.provider == "ollama":
+        else:  # model_configuration.provider == "ollama":
             logger.debug(f"Using Ollama model {model_configuration.name}")
             llm = ChatOllama(
                 base_url=settings.OLLAMA_URL,
@@ -111,20 +103,6 @@ class ExampleQueryController:
                 ),
                 temperature=model_configuration.parameters.get("temperature", 0.1),
                 system=system,
-            )
-        elif model_configuration.provider == "truefoundry":
-            logger.debug(f"Using TrueFoundry model {model_configuration.name}")
-            llm = TrueFoundryChat(
-                model=model_configuration.name,
-                model_parameters=model_configuration.parameters,
-                system_prompt=system,
-            )
-        else:
-            logger.debug(f"Using TrueFoundry model {model_configuration.name}")
-            llm = TrueFoundryChat(
-                model=model_configuration.name,
-                model_parameters=model_configuration.parameters,
-                system_prompt=system,
             )
         return llm
 
@@ -154,7 +132,7 @@ class ExampleQueryController:
 
     def _get_contextual_compression_retriever(self, vector_store, retriever_config):
         """
-        Get the contextual compression retriever
+        Возвращает contextual compression retriever
         """
         # Using mixbread-ai Reranker
         if retriever_config.compressor_model_provider == "mixbread-ai":
@@ -177,10 +155,10 @@ class ExampleQueryController:
             )
 
     def _get_multi_query_retriever(
-        self, vector_store, retriever_config, retriever_type="vectorstore"
+            self, vector_store, retriever_config, retriever_type="vectorstore"
     ):
         """
-        Get the multi query retriever
+        Возвращает multi query retriever
         """
         if retriever_type == "vectorstore":
             base_retriever = self._get_vector_store_retriever(
@@ -198,7 +176,7 @@ class ExampleQueryController:
 
     async def _get_retriever(self, vector_store, retriever_name, retriever_config):
         """
-        Get the retriever
+        Возвращает retriever
         """
         if retriever_name == "vectorstore":
             logger.debug(
@@ -257,14 +235,10 @@ class ExampleQueryController:
                 raise HTTPException(status_code=504, detail="Stream timed out")
 
     @post("/answer")
-    async def answer(
-        self,
-        request: ExampleQueryInput = Body(
-            openapi_examples=EXAMPLES,
-        ),
-    ):
+    async def answer(self,
+                     request: ExampleQueryInput = Body(openapi_examples=EXAMPLES)):
         """
-        Sample answer method to answer the question using the context from the collection
+        Метод для ответа на вопросы, используя контекст из коллекции
         """
         try:
             # Get the vector store
@@ -288,12 +262,12 @@ class ExampleQueryController:
 
             # Using LCEL
             rag_chain_from_docs = (
-                RunnablePassthrough.assign(
-                    context=(lambda x: self._format_docs(x["context"]))
-                )
-                | QA_PROMPT
-                | llm
-                | StrOutputParser()
+                    RunnablePassthrough.assign(
+                        context=(lambda x: self._format_docs(x["context"]))
+                    )
+                    | QA_PROMPT
+                    | llm
+                    | StrOutputParser()
             )
 
             rag_chain_with_source = RunnableParallel(
@@ -333,7 +307,6 @@ class ExampleQueryController:
         except Exception as exp:
             logger.exception(exp)
             raise HTTPException(status_code=500, detail=str(exp))
-
 
 #######
 # Streaming Client

@@ -51,5 +51,10 @@ pytest tests/dataloaders
 | взаимодействие с польз |
 | Всего                  |
 
+- для [SingleStore в docker](https://www.singlestore.com/blog/spin-up-a-memsql-cluster-on-docker-desktop-in-10-minutes/):
+8 GB RAM, 4 cores CPU
+- 
+/** SingleStore Бесплатно до четырех узлов с 32 ГБ ОЗУ каждый и при поддержке сообщества.
+
 /* Зависит от размера модели
 - https://developer.nvidia.com/blog/deploying-retrieval-augmented-generation-applications-on-nvidia-gh200-delivers-accelerated-performance/

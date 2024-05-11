@@ -11,18 +11,19 @@ class Settings(BaseSettings):
     """
     Класс Settings для хранения всех переменных среды
     """
-    LOG_LEVEL: str
     LOCAL: bool
-    METADATA_STORE_CONFIG: MetadataStoreConfig
+    LOG_LEVEL: str
     GIGACHAT_API_KEY: str
+    VECTOR_DB_CONFIG: VectorDBConfig
+    METADATA_STORE_CONFIG: MetadataStoreConfig
 
-    LOG_LEVEL = os.getenv("LOG_LEVEL", "info")
     LOCAL: bool = os.getenv("LOCAL", False)
-    METADATA_STORE_CONFIG = os.getenv("METADATA_STORE_CONFIG", "")
+    LOG_LEVEL = os.getenv("LOG_LEVEL", "info")
     GIGACHAT_API_KEY = os.getenv("GIGACHAT_API_KEY", "")
+    VECTOR_DB_CONFIG = os.getenv("VECTOR_DB_CONFIG", "")
+    METADATA_STORE_CONFIG = os.getenv("METADATA_STORE_CONFIG", "")
 
     """
-    METADATA_STORE_CONFIG: MetadataStoreConfig
     VECTOR_DB_CONFIG: VectorDBConfig
     TFY_SERVICE_ROOT_PATH: Optional[str] = "/"
     TFY_API_KEY: str
@@ -31,7 +32,6 @@ class Settings(BaseSettings):
     TFY_LLM_GATEWAY_URL: str
     EMBEDDING_CACHE_CONFIG: Optional[EmbeddingCacheConfig] = None
 
-    LOG_LEVEL = os.getenv("LOG_LEVEL", "info")
     VECTOR_DB_CONFIG = os.getenv("VECTOR_DB_CONFIG", "")
     METADATA_STORE_CONFIG = os.getenv("METADATA_STORE_CONFIG", "")
     TFY_SERVICE_ROOT_PATH = os.getenv("TFY_SERVICE_ROOT_PATH", "")

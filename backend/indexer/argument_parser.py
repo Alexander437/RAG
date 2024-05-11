@@ -10,7 +10,7 @@ from backend.types import DataIngestionMode
 class ParsedIndexingArguments(BaseModel):
     """
     Конфигурация для хранения аргументов индексирования.
-    Требуется имя коллекции (существующей) и полное имя источника данных
+    Обязательны имя коллекции (существующей) и полное имя источника данных
     """
     collection_name: str
     data_source_fqn: str

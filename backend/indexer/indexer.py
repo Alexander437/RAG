@@ -27,7 +27,7 @@ from backend.types import (
 
 def get_data_point_fqn_to_hash_map(
     data_point_vectors: List[DataPointVector],
-) -> Dict[str, str]:
+    ) -> Dict[str, str]:
     """
     Возвращает отображение из точки данных в hash
     """
@@ -135,7 +135,7 @@ async def _sync_data_source_to_collection(
 
     Args:
         inputs (DataIngestionConfig): Конфигурация для приема данных
-        previous_snapshot (Dict[str, str], optional): Словарь сопоставляющий полные доменные имена точек данных с их хэшами. Defaults to None.
+        previous_snapshot (Dict[str, str], optional): Словарь сопоставляющий полные имена точек данных с их хэшами.
 
     Raises:
         Exception: Если не удалось принять какие-либо точки данных
@@ -191,11 +191,9 @@ async def _sync_data_source_to_collection(
             )
 
 
-async def ingest_data_points(
-    inputs: DataIngestionConfig,
-    loaded_data_points: List[LoadedDataPoint],
-    documents_ingested_count: int,
-):
+async def ingest_data_points(inputs: DataIngestionConfig,
+                             loaded_data_points: List[LoadedDataPoint],
+                             documents_ingested_count: int):
     """
     Принимает точки данных в векторное хранилище для данного батча.
 
@@ -292,7 +290,7 @@ async def ingest_data_points(
 
 
 async def ingest_data(request: IngestDataToCollectionDto):
-    """Ingest data into the collection"""
+    """Прием данных в коллекцию (при работе с сайтом)"""
     try:
         collection = METADATA_STORE_CLIENT.get_collection_by_name(
             collection_name=request.collection_name, no_cache=True

@@ -52,7 +52,7 @@ class LocalMetadataStore(BaseMetadataStore):
         )
         self.fqn = self.data_source.fqn
         self.parser_config = self.local_metadata.parser_config
-        associated_data_sources = {}
+        associated_data_sources = dict()
         associated_data_sources[self.data_source.fqn] = AssociatedDataSources(
             data_source_fqn=self.data_source.fqn,
             parser_config=self.parser_config,

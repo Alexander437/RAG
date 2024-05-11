@@ -24,18 +24,16 @@ class BaseMetadataStore(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get_collection_by_name(
-        self, collection_name: str, no_cache: bool = True
-    ) -> Collection | None:
+    def get_collection_by_name(self,
+                               collection_name: str,
+                               no_cache: bool = True) -> Collection | None:
         """
         Доступ к коллекции по имени
         """
         raise NotImplementedError()
 
     @abstractmethod
-    def get_collections(
-        self,
-    ) -> List[Collection]:
+    def get_collections(self) -> List[Collection]:
         """
         Возвращает список всех коллекций metadata store
         """
@@ -63,29 +61,31 @@ class BaseMetadataStore(ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    def create_data_ingestion_run(
-        self, data_ingestion_run: CreateDataIngestionRun
-    ) -> DataIngestionRun:
+    def create_data_ingestion_run(self,
+                                  data_ingestion_run: CreateDataIngestionRun
+                                  ) -> DataIngestionRun:
         """
         Возвращает экземпляр задачи по передаче данных в metadata store
         """
         raise NotImplementedError()
 
     @abstractmethod
-    def get_data_ingestion_run(
-        self, data_ingestion_run_name: str, no_cache: bool = False
-    ) -> DataIngestionRun | None:
+    def get_data_ingestion_run(self,
+                               data_ingestion_run_name: str,
+                               no_cache: bool = False
+                               ) -> DataIngestionRun | None:
         """
         Возвращает экземпляр задачи по передаче данных из metadata store по имени
         """
         raise NotImplementedError()
 
     @abstractmethod
-    def get_data_ingestion_runs(
-        self, collection_name: str, data_source_fqn: str = None
-    ) -> List[DataIngestionRun]:
+    def get_data_ingestion_runs(self,
+                                collection_name: str,
+                                data_source_fqn: str = None
+                                ) -> List[DataIngestionRun]:
         """
-        Возвращает экземпляр задачи по передаче всех данных из metadata store
+        Возвращает все экземпляры задач по передаче всех данных из metadata store
         """
         raise NotImplementedError()
 
@@ -97,54 +97,48 @@ class BaseMetadataStore(ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    def associate_data_source_with_collection(
-        self,
-        collection_name: str,
-        data_source_association: AssociateDataSourceWithCollection,
-    ) -> Collection:
+    def associate_data_source_with_collection(self,
+                                              collection_name: str,
+                                              data_source_association: AssociateDataSourceWithCollection
+                                              ) -> Collection:
         """
         Связывает источник данных с коллекцией metadata store
         """
         raise NotImplementedError()
 
     @abstractmethod
-    def unassociate_data_source_with_collection(
-        self,
-        collection_name: str,
-        data_source_fqn: str,
-    ) -> Collection:
+    def unassociate_data_source_with_collection(self,
+                                                collection_name: str,
+                                                data_source_fqn: str
+                                                ) -> Collection:
         """
         Удаляет связь между источником данных и коллекцией metadata store
         """
         raise NotImplementedError()
 
     @abstractmethod
-    def update_data_ingestion_run_status(
-        self,
-        data_ingestion_run_name: str,
-        status: DataIngestionRunStatus,
-    ):
+    def update_data_ingestion_run_status(self,
+                                         data_ingestion_run_name: str,
+                                         status: DataIngestionRunStatus):
         """
         Обновляет статус приема данных в metadata store
         """
         raise NotImplementedError()
 
     @abstractmethod
-    def log_metrics_for_data_ingestion_run(
-        self,
-        data_ingestion_run_name: str,
-        metric_dict: dict[str, int | float],
-        step: int = 0,
-    ):
+    def log_metrics_for_data_ingestion_run(self,
+                                           data_ingestion_run_name: str,
+                                           metric_dict: dict[str, int | float],
+                                           step: int = 0):
         """
-        Логирует метрики задачи приема данных в the metadata store
+        Логирует метрики задачи приема данных в metadata store
         """
         raise NotImplementedError()
 
     @abstractmethod
-    def log_errors_for_data_ingestion_run(
-        self, data_ingestion_run_name: str, errors: Dict[str, Any]
-    ):
+    def log_errors_for_data_ingestion_run(self,
+                                          data_ingestion_run_name: str,
+                                          errors: Dict[str, Any]):
         """
         Логирует ошибки задачи приема данных в the metadata store
         """
@@ -155,9 +149,7 @@ def get_data_source_fqn(data_source: CreateDataSource) -> str:
     return f"{FQN_SEPARATOR}".join([data_source.type, data_source.uri])
 
 
-def get_data_source_fqn_from_document_metadata(
-    document_metadata: Dict[str, str]
-) -> str | None:
+def get_data_source_fqn_from_document_metadata(document_metadata: Dict[str, str]) -> str | None:
     if document_metadata and document_metadata.get(DATA_POINT_FQN_METADATA_KEY):
         parts = document_metadata.get(DATA_POINT_FQN_METADATA_KEY).split(FQN_SEPARATOR)
         if len(parts) == 3:
@@ -185,9 +177,7 @@ def register_metadata_store(provider: str, cls) -> None:
     METADATA_STORE_REGISTRY[provider] = cls
 
 
-def get_metadata_store_client(
-    config: MetadataStoreConfig,
-) -> BaseMetadataStore:
+def get_metadata_store_client(config: MetadataStoreConfig) -> BaseMetadataStore:
     if config.provider in METADATA_STORE_REGISTRY:
         return METADATA_STORE_REGISTRY[config.provider](config=config.config)
     else:

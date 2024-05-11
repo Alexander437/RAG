@@ -4,7 +4,7 @@ from typing import Optional
 import orjson
 from pydantic import BaseSettings
 
-from backend.types import  MetadataStoreConfig, VectorDBConfig
+from backend.types import MetadataStoreConfig, VectorDBConfig
 
 
 class Settings(BaseSettings):
@@ -17,11 +17,15 @@ class Settings(BaseSettings):
     VECTOR_DB_CONFIG: VectorDBConfig
     METADATA_STORE_CONFIG: MetadataStoreConfig
 
-    LOCAL: bool = os.getenv("LOCAL", False)
+    LOCAL: bool = os.getenv("LOCAL", True)
     LOG_LEVEL = os.getenv("LOG_LEVEL", "info")
     GIGACHAT_API_KEY = os.getenv("GIGACHAT_API_KEY", "")
     VECTOR_DB_CONFIG = os.getenv("VECTOR_DB_CONFIG", "")
     METADATA_STORE_CONFIG = os.getenv("METADATA_STORE_CONFIG", "")
+
+    # Для backend.indexer.indexer -> ingest_data(request)
+    JOB_FQN = os.getenv("JOB_FQN", "")
+    JOB_COMPONENT_NAME = os.getenv("JOB_COMPONENT_NAME", "")
 
     """
     VECTOR_DB_CONFIG: VectorDBConfig

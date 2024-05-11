@@ -6,6 +6,16 @@
 - [Quivr](https://github.com/QuivrHQ/quivr)
 - [Dify](https://github.com/langgenius/dify)
 
+## API
+
+### Local
+
+Добавить документы в коллекцию:
+1. Редактировать файл `./volumes/metadata.yaml`
+2. `python local/ingest.py`
+
+
+
 ## Server requirements
 
 При использовании API (ChatGPT, GigaChat и др.), 

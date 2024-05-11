@@ -3,7 +3,7 @@ import tempfile
 from typing import Dict, List
 
 from fastapi import HTTPException
-from fastapi.responses imoprt JSONResponse
+from fastapi.responses import JSONResponse
 from truefoundry.deploy import trigger_job
 
 from backend.constants import DATA_POINT_FQN_METADATA_KEY, DATA_POINT_HASH_METADATA_KEY
@@ -224,7 +224,7 @@ async def ingest_data_points(inputs: DataIngestionConfig,
         # Get parser for required file extension
         parser = get_parser_for_extension(
             file_extension=loaded_data_point.file_extension,
-            parsers_map=inputs.parser_config.parser_map,
+            parsers_map=inputs.parser_config.parse_map,
             max_chunk_size=inputs.parser_config.chunk_size,
             chunk_overlap=inputs.parser_config.chunk_overlap,
             additional_config=inputs.parser_config.additional_config,

@@ -65,6 +65,8 @@ inputs = DataIngestionConfig(
     raise_error_on_failture=created_data_ingestion_run.raise_error_on_failure,
     batch_size=100,
 )
+
+asyncio.run(sync_data_source_to_collection(inputs=inputs))
 ```
 """
 from backend.modules.metadata_store.base import register_metadata_store

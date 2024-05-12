@@ -8,27 +8,19 @@ from backend.modules.query_controllers.example.types import ExampleQueryInput
 # Payload for the query
 # You can try different payload examples from `backend.modules.query_controllers.example.payload`
 request = {
-    "collection_name": "creditcard",
-    "query": "Explain in detail different categories of credit cards",
+    "collection_name": "example",
+    "query": "Расскажи про угрозы в области информационной безопасности",
     "model_configuration": {
-        "name": "ollama/gemma:2b",
+        "name": "bambucha/saiga-llama3",
         "provider": "ollama",
         "parameters": {"temperature": 0.1},
     },
-    "prompt_template": "Answer the question based only on the following context:\nContext: {context} \nQuestion: {question}",
-    "retriever_name": "contexual-compression-multi-query",
+    "prompt_template": "Ответ на вопрос предоставьте, опираясь только на следующий контекст:\nКонтекст: {context} \nВопрос: {question}",
+    "retriever_name": "vectorstore",
     "retriever_config": {
-        "compressor_model_provider": "mixbread-ai",
-        "compressor_model_name": "mixedbread-ai/mxbai-rerank-xsmall-v1",
-        "top_k": 7,
         "search_type": "similarity",
         "search_kwargs": {
-            "k": 20,
-        },
-        "retriever_llm_configuration": {
-            "name": "ollama/gemma:2b",
-            "provider": "ollama",
-            "parameters": {"temperature": 0.9},
+            "k": 5,
         },
     },
     "stream": False,

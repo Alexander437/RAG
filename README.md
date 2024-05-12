@@ -6,6 +6,20 @@
 - [Quivr](https://github.com/QuivrHQ/quivr)
 - [Dify](https://github.com/langgenius/dify)
 
+Запуск локально: 
+- https://hub.docker.com/r/ollama/ollama
+- https://docs.docker.com/compose/gpu-support/
+
+```bash
+docker run -d --gpus=all -v ./volumes/ollama:/root/.ollama -p 11434:11434 --name ollama_download ollama/ollama
+docker exec -it ollama_download ollama pull bambucha/saiga-llama3
+```
+
+```bash
+docker compose up
+docker compose --profile elastic up
+```
+
 ## API
 
 ### Local
@@ -13,7 +27,8 @@
 Добавить документы в коллекцию:
 1. Редактировать файл `./volumes/metadata.yaml`
 2. `python local/ingest.py`
-
+3. `docker compose up`
+4. `python local/run.py`
 
 
 ## Server requirements

@@ -1,0 +1,73 @@
+version: '3.9'
+
+services:
+  ollama:
+    image: ollama/ollama
+    restart: always
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    expose:
+      - 11434
+    volumes:
+      - ./volumes/ollama:/root/.ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [ gpu ]
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    restart: always
+    container_name: qdrant
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    expose:
+      - 6333
+      - 6334
+      - 6335
+    configs:
+      - source: qdrant_config
+        target: /qdrant/config/production.yaml
+    volumes:
+      - ./volumes/qdrant/data:/qdrant_data
+
+  elasticsearch:
+    profiles:
+      - elastic
+    image: elasticsearch:8.13.0
+    configs:
+      - source: elastic_config
+        target: /usr/share/elasticsearch/config/elasticsearch.yml
+    volumes:
+      - ./volumes/elasticsearch/data:/usr/share/elasticsearch/data
+    environment:
+      ES_JAVA_OPTS: "-Xmx512m -Xms512m"
+      ELASTIC_USERNAME: "elastic"
+      ELASTIC_PASSWORD: "MyPw123"
+      discovery.type: single-node
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+
+configs:
+  qdrant_config:
+    content: |
+      log_level: INFO
+      # https://qdrant.tech/documentation/guides/configuration/
+      storage:
+        # Where to store all the data
+        on_disk_payload: true  
+        storage_path: /qdrant_data/storage
+
+  elastic_config:
+    content: |
+      cluster.name: "vectorstore"
+      network.host: 0.0.0.0 # Для корректной работы внутри контейнера
+
+      xpack.security.enabled: true # Для поддержки функционала, обеспечивающего безопасность кластера
+      xpack.license.self_generated.type: basic # Типа лицензии "basic" для наших нужд хватит с головой

@@ -73,7 +73,7 @@ class ExampleQueryController:
         """
         Возвращает объект LLM
         """
-        system = "You are a helpful assistant."
+        system = "Ты — русскоязычный автоматический ассистент. Ты разговариваешь с людьми и помогаешь им."
         if model_configuration.provider == "gigachat":
             logger.debug(f"Using GigaChat model {model_configuration.name}")
             llm = GigaChat(
@@ -85,11 +85,7 @@ class ExampleQueryController:
             logger.debug(f"Using Ollama model {model_configuration.name}")
             llm = ChatOllama(
                 base_url=settings.OLLAMA_URL,
-                model=(
-                    model_configuration.name.split("/")[1]
-                    if "/" in model_configuration.name
-                    else model_configuration.name
-                ),
+                model=model_configuration.name,
                 temperature=model_configuration.parameters.get("temperature", 0.1),
                 system=system,
             )

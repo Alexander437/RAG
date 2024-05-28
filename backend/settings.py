@@ -1,10 +1,9 @@
 import os
-from typing import Optional
 
 import orjson
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
 
-from backend.types import MetadataStoreConfig, VectorDBConfig
+from backend.rag.schemas import VectorDBConfig, MetadataStoreConfig
 
 
 class Settings(BaseSettings):
@@ -23,10 +22,6 @@ class Settings(BaseSettings):
     VECTOR_DB_CONFIG = os.getenv("VECTOR_DB_CONFIG", "")
     METADATA_STORE_CONFIG = os.getenv("METADATA_STORE_CONFIG", "")
     OLLAMA_URL: str = os.getenv("OLLAMA_URL", "http://localhost:11434")
-
-    # Для backend.indexer.indexer -> ingest_data(request)
-    JOB_FQN = os.getenv("JOB_FQN", "")
-    JOB_COMPONENT_NAME = os.getenv("JOB_COMPONENT_NAME", "")
 
     if not VECTOR_DB_CONFIG:
         raise ValueError("VECTOR_DB_CONFIG is not set")

@@ -1,6 +1,29 @@
 version: '3.9'
 
 services:
+#  backend_api:
+#    build:
+#      context: .
+#      dockerfile: ./backend/Dockerfile
+#    container_name: backend_api
+#    restart: always
+#    volumes:
+#      - ./data:/home/app/data
+#      - .env:/home/app/.env
+#      - ./volumes/backend:/home/app/volumes/backend
+#    ports:
+#      - "80:80"
+#    expose:
+#      - 80
+#    command: uvicorn --host 0.0.0.0 --port 8000 backend.server.app:app
+#    deploy:
+#      resources:
+#        reservations:
+#          devices:
+#            - driver: nvidia
+#              count: 1
+#              capabilities: [ gpu ]
+
   ollama:
     image: ollama/ollama
     restart: always
@@ -18,6 +41,11 @@ services:
             - driver: nvidia
               count: 1
               capabilities: [ gpu ]
+
+  db:
+    image: postgres:16-alpine
+    restart: always
+
 
   qdrant:
     image: qdrant/qdrant:latest

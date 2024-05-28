@@ -2,10 +2,9 @@
 __pycache__/
 .idea/
 .env
-tests/
+models/embeddings
 data/
-pytest.ini
-volumes/
+volumes/*/*
 *.py[cod]
 *$py.class
 

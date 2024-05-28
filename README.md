@@ -20,15 +20,20 @@ docker compose up
 docker compose --profile elastic up
 ```
 
-## API
 
-### Local
+## Проблемы
+
+* разобраться с загрузкой документов и разбиением их по абзацам!
+* работает только с одной локальной коллекцией, нет добавления и удаления источников => хранить metadata в redis
+* разобраться с потоковой передачей в `query_controllers`
+
+## Local RUN
 
 Добавить документы в коллекцию:
-1. Редактировать файл `./volumes/metadata.yaml`
-2. `python local/ingest.py`
-3. `docker compose up`
-4. `python local/run.py`
+
+1. Редактировать файл `volumes/backend/metadata.yaml`
+2. `docker compose up`
+3. `python ingest.py`
 
 
 ## Server requirements
@@ -56,11 +61,6 @@ vm.max_map_count=262144
 * https://github.com/truefoundry/rag-blog
 * https://www.linkedin.com/pulse/what-hardware-do-you-need-rag-genai-vasudev-lal-cf4vc
 
-## Tests
-
-```bash
-pytest tests/dataloaders
-```
 
 ## Additional
 

@@ -14,8 +14,9 @@ class Settings(BaseSettings):
     # General
     LOG_LEVEL: str = os.getenv("LOG_LEVEL", "info")
 
-    # Users DB
+    # Auth
     USER_DB_CONFIG: UserDBConfig
+    AUTH_SECRET: str = os.getenv("AUTH_SECRET", "")
     # Vector DB
     VECTOR_DB_CONFIG: VectorDBConfig
     # Metastore

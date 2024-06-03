@@ -2,7 +2,7 @@ import asyncio
 import json
 
 import async_timeout
-from fastapi import Body, HTTPException
+from fastapi import HTTPException
 from fastapi.responses import StreamingResponse
 from langchain.prompts import PromptTemplate
 from langchain.retrievers import ContextualCompressionRetriever, MultiQueryRetriever
@@ -15,56 +15,10 @@ from langchain_community.chat_models import GigaChat
 from backend.logger import logger
 from backend.rag.embedders.embedder import get_embedder
 from backend.rag.metadata_store.client import METADATA_STORE_CLIENT
-from backend.rag.query_controllers.example.payload import (
-    QUERY_WITH_CONTEXTUAL_COMPRESSION_MULTI_QUERY_RETRIEVER_MMR_PAYLOAD,
-    QUERY_WITH_CONTEXTUAL_COMPRESSION_MULTI_QUERY_RETRIEVER_SIMILARITY_PAYLOAD,
-    QUERY_WITH_CONTEXTUAL_COMPRESSION_MULTI_QUERY_RETRIEVER_SIMILARITY_SCORE_PAYLOAD,
-    QUERY_WITH_CONTEXTUAL_COMPRESSION_RETRIEVER_PAYLOAD,
-    QUERY_WITH_CONTEXTUAL_COMPRESSION_RETRIEVER_SEARCH_TYPE_MMR_PAYLOAD,
-    QUERY_WITH_CONTEXTUAL_COMPRESSION_RETRIEVER_SEARCH_TYPE_SIMILARITY_WITH_SCORE_PAYLOAD,
-    QUERY_WITH_MULTI_QUERY_RETRIEVER_MMR_PAYLOAD,
-    QUERY_WITH_MULTI_QUERY_RETRIEVER_SIMILARITY_PAYLOAD,
-    QUERY_WITH_MULTI_QUERY_RETRIEVER_SIMILARITY_SCORE_PAYLOAD,
-    QUERY_WITH_VECTOR_STORE_RETRIEVER_MMR_PAYLOAD,
-    QUERY_WITH_VECTOR_STORE_RETRIEVER_PAYLOAD,
-    QUERY_WITH_VECTOR_STORE_RETRIEVER_SIMILARITY_SCORE_PAYLOAD,
-)
-from backend.rag.query_controllers.example.schemas import (
-    GENERATION_TIMEOUT_SEC,
-    ExampleQueryInput, AnswerResultDto,
-)
+from backend.rag.query_controllers.example.schemas import GENERATION_TIMEOUT_SEC, ExampleQueryInput, AnswerResultDto
 from backend.rag.reranker import MxBaiReranker
 from backend.rag.vector_db.client import VECTOR_STORE_CLIENT
-# from backend.server.decorators import post, query_controller
 from backend.settings import settings
-
-EXAMPLES = {
-    "vector-store-similarity": QUERY_WITH_VECTOR_STORE_RETRIEVER_PAYLOAD,
-    "vector-store-similarity-threshold": QUERY_WITH_VECTOR_STORE_RETRIEVER_SIMILARITY_SCORE_PAYLOAD,
-
-    # Search + re-ranking
-    "contextual-compression-similarity": QUERY_WITH_CONTEXTUAL_COMPRESSION_RETRIEVER_PAYLOAD,
-    "contextual-compression-similarity-threshold": QUERY_WITH_CONTEXTUAL_COMPRESSION_RETRIEVER_SEARCH_TYPE_SIMILARITY_WITH_SCORE_PAYLOAD,
-    # Multi-query + search + re-ranking
-    "contextual-compression-multi-query-similarity": QUERY_WITH_CONTEXTUAL_COMPRESSION_MULTI_QUERY_RETRIEVER_SIMILARITY_PAYLOAD,
-    "contextual-compression-multi-query-similarity-threshold": QUERY_WITH_CONTEXTUAL_COMPRESSION_MULTI_QUERY_RETRIEVER_SIMILARITY_SCORE_PAYLOAD,
-    # Keeping these for future use:
-    # "contextual-compression-similarity-threshold": QUERY_WITH_CONTEXTUAL_COMPRESSION_RETRIEVER_SEARCH_TYPE_SIMILARITY_WITH_SCORE_PAYLOAD,
-    # "vector-store-mmr": QUERY_WITH_VECTOR_STORE_RETRIEVER_MMR_PAYLOAD,
-    # "contextual-compression-similarity": QUERY_WITH_CONTEXTUAL_COMPRESSION_RETRIEVER_PAYLOAD,
-    # "multi-query-mmr": QUERY_WITH_MULTI_QUERY_RETRIEVER_MMR_PAYLOAD,
-}
-
-
-# if settings.LOCAL:
-#     EXAMPLES.update(
-#         {
-#             "contextual-compression-similarity": QUERY_WITH_CONTEXTUAL_COMPRESSION_RETRIEVER_PAYLOAD,
-#             "contextual-compression-multi-query-similarity": QUERY_WITH_CONTEXTUAL_COMPRESSION_MULTI_QUERY_RETRIEVER_SIMILARITY_PAYLOAD,
-#             "multi-query-similarity": QUERY_WITH_MULTI_QUERY_RETRIEVER_SIMILARITY_PAYLOAD,
-#             "multi-query-similarity-threshold": QUERY_WITH_MULTI_QUERY_RETRIEVER_SIMILARITY_SCORE_PAYLOAD,
-#         }
-#     )
 
 
 class ExampleQueryController:

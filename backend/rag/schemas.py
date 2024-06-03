@@ -118,9 +118,6 @@ class VectorDBConfig(BaseModel):
     Конфигурация векторной ДБ
     """
     provider: str
-    local: Optional[bool] = None
-    url: Optional[str] = None
-    api_key: Optional[str] = None
     config: Optional[dict] = None
 
 

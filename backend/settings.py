@@ -34,15 +34,19 @@ class Settings(BaseSettings):
         db_host=os.getenv("DB_HOST", ""),
         db_port=os.getenv("DB_PORT", ""),
     )
+    VECTOR_DB_CONFIG = VectorDBConfig(
+        provider=os.getenv("VECTORDB_PROVIDER", "qdrant"),
+        config=orjson.loads(os.getenv("VECTORDB_CONFIG")),
+    )
     METADATA_STORE_CONFIG = MetadataStoreConfig(
         provider=os.getenv("METADATA_PROVIDER", "file"),
         config=orjson.loads(os.getenv("METADATA_CONFIG"))
     )
+    if not USER_DB_CONFIG:
+        raise ValueError("USER_DB_CONFIG is not set")
 
-    VECTOR_DB_CONFIG = os.getenv("VECTOR_DB_CONFIG", "")
     if not VECTOR_DB_CONFIG:
         raise ValueError("VECTOR_DB_CONFIG is not set")
-    VECTOR_DB_CONFIG = VectorDBConfig.parse_obj(orjson.loads(VECTOR_DB_CONFIG))
 
     if not METADATA_STORE_CONFIG:
         raise ValueError("METADATA_CONFIG is not set")

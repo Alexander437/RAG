@@ -35,6 +35,6 @@ SUPPORTED_VECTOR_DBS = {
 
 def get_vector_db_client(config: VectorDBConfig) -> BaseVectorDB:
     if config.provider in SUPPORTED_VECTOR_DBS:
-        return SUPPORTED_VECTOR_DBS[config.provider](config=config)
+        return SUPPORTED_VECTOR_DBS[config.provider](config=config.config)
     else:
         raise ValueError(f"Unknown vector db provider: {config.provider}")

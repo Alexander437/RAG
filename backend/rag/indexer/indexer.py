@@ -272,7 +272,7 @@ async def ingest_data_points(inputs: DataIngestionConfig,
 
 
 async def ingest_data(request: IngestDataToCollectionDto):
-    """Прием данных в коллекцию (при работе с сайтом)"""
+    """Прием данных в коллекцию"""
     try:
         collection = METADATA_STORE_CLIENT.get_collection_by_name(
             collection_name=request.collection_name, no_cache=True
@@ -294,7 +294,6 @@ async def ingest_data(request: IngestDataToCollectionDto):
                 status_code=400,
                 detail=f"Collection {request.collection_name} does not have any associated data sources.",
             )
-        associated_data_sources_to_be_ingested = []
         if request.data_source_fqn:
             associated_data_sources_to_be_ingested = [
                 collection.associated_data_sources.get(request.data_source_fqn)

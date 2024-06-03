@@ -84,7 +84,7 @@ class MongoMetadataStore(BaseMetadataStore):
     def create_data_ingestion_run(
         self, data_ingestion_run: CreateDataIngestionRun
     ) -> DataIngestionRun:
-        name = uuid.uuid1()
+        name = str(uuid.uuid1())
         d = {
             "_id": name,
             "name": name,

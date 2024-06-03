@@ -24,12 +24,15 @@ docker compose --profile elastic up
 ## Проблемы
 
 * разобраться с загрузкой документов и разбиением их по абзацам!
-* работает только с одной локальной коллекцией, нет добавления и удаления источников => хранить metadata в redis
 * разобраться с потоковой передачей в `query_controllers`
 
 ## Local RUN
 
 Добавить документы в коллекцию:
+
+POST `/collections/ingest` -> абсолютный путь к файлу
+
+ИЛИ
 
 1. Редактировать файл `volumes/backend/metadata.yaml`
 2. `docker compose up`

@@ -5,6 +5,8 @@ import fitz
 from langchain.docstore.document import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
+from backend.constants import TEXT_SEPARATORS, STRS_TO_DELETE
+from backend.logger import logger
 from backend.rag.parsers.parser import BaseParser
 from backend.rag.parsers.utils import contains_text
 
@@ -53,23 +55,20 @@ class PdfParserUsingPyMuPDF(BaseParser):
                     final_tables.extend(tab)
 
                 text = page.get_text()
-
-                # clean up text for any problematic characters
-                text = re.sub("\n", " ", text).strip()
-                # text = text.encode("ascii", errors="ignore").decode("ascii")
-                text = re.sub(r"([^\w\s])\1{4,}", " ", text)
-                text = re.sub(" +", " ", text).strip()
-
+                for str_to_delete in STRS_TO_DELETE:
+                    text = text.replace(str_to_delete, "")
                 # Create a Document object per page with page-specific metadata
                 if len(text) > self.max_chunk_size:
                     # Split the text into chunks of size less than or equal to max_chunk_size
                     text_splitter = RecursiveCharacterTextSplitter(
-                        chunk_size=self.max_chunk_size, chunk_overlap=0
+                        separators=TEXT_SEPARATORS,
+                        chunk_size=self.max_chunk_size,
+                        chunk_overlap=0
                     )
                     text_splits = text_splitter.split_text(text)
                     texts = [
                         Document(
-                            page_content=text_split,
+                            page_content=self.clear_text(text_split),
                             metadata={
                                 "page_num": page.number,
                                 "type": "text",
@@ -83,7 +82,7 @@ class PdfParserUsingPyMuPDF(BaseParser):
                     if contains_text(text):
                         final_texts.append(
                             Document(
-                                page_content=text,
+                                page_content=self.clear_text(text),
                                 metadata={
                                     "page_num": page.number,
                                     "type": "text",
@@ -91,8 +90,16 @@ class PdfParserUsingPyMuPDF(BaseParser):
                             )
                         )
         except Exception:
-            print(f"Error while parsing PDF file at {filepath}")
+            logger.error(f"Error while parsing PDF file at {filepath}")
             # Return an empty list if there was an error during processing
             return []
 
         return final_texts + final_tables
+
+    @staticmethod
+    def clear_text(text: str) -> str:
+        # clean up text for any problematic characters
+        text = re.sub("\n", " ", text).strip()
+        text = re.sub(r"([^\w\s])\1{4,}", " ", text)
+        text = re.sub(" +", " ", text).strip()
+        return text

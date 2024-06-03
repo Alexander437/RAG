@@ -11,26 +11,26 @@
 - https://docs.docker.com/compose/gpu-support/
 
 ```bash
-docker run -d --gpus=all -v ./volumes/ollama:/root/.ollama -p 11434:11434 --name ollama_download ollama/ollama
-docker exec -it ollama_download ollama pull bambucha/saiga-llama3
+docker compose up
+docker exec ollama ollama pull bambucha/saiga-llama3
 ```
 
 ```bash
-docker compose up
+# Для использования elasticsearch 
 docker compose --profile elastic up
 ```
 
-
 ## Проблемы
 
-* разобраться с загрузкой документов и разбиением их по абзацам!
 * разобраться с потоковой передачей в `query_controllers`
+* включить авторизацию в вызовы api и сделать уведомления на почту
+* Добавить OCR для чтения pdf и фото
 
 ## Local RUN
 
 Добавить документы в коллекцию:
 
-POST `/collections/ingest` -> абсолютный путь к файлу
+POST `/collections/ingest` -> в аргументах должен быть абсолютный путь к файлу
 
 ИЛИ
 
@@ -78,11 +78,6 @@ vm.max_map_count=262144
 | работа LLM             |           | 8-30 Gb | 5-50 GB и более *        | 5-50 GB      |      | https://github.com/ollama/ollama  |
 | взаимодействие с польз |
 | Всего                  |
-
-- для [SingleStore в docker](https://www.singlestore.com/blog/spin-up-a-memsql-cluster-on-docker-desktop-in-10-minutes/):
-8 GB RAM, 4 cores CPU
-- 
-/** SingleStore Бесплатно до четырех узлов с 32 ГБ ОЗУ каждый и при поддержке сообщества.
 
 /* Зависит от размера модели
 - https://developer.nvidia.com/blog/deploying-retrieval-augmented-generation-applications-on-nvidia-gh200-delivers-accelerated-performance/

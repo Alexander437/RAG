@@ -70,7 +70,9 @@ asyncio.run(sync_data_source_to_collection(inputs=inputs))
 """
 from backend.rag.metadata_store.base import register_metadata_store
 from backend.rag.metadata_store.modules.local import LocalMetadataStore
+from backend.rag.metadata_store.modules.mongo import MongoMetadataStore
 from backend.settings import settings
 
 # if settings.LOCAL:
-register_metadata_store("local", LocalMetadataStore)
+register_metadata_store("file", LocalMetadataStore)
+register_metadata_store("mongo", MongoMetadataStore)

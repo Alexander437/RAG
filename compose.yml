@@ -1,29 +1,6 @@
 version: '3.9'
 
 services:
-#  backend_api:
-#    build:
-#      context: .
-#      dockerfile: ./backend/Dockerfile
-#    container_name: backend_api
-#    restart: always
-#    volumes:
-#      - ./data:/home/app/data
-#      - .env:/home/app/.env
-#      - ./volumes/backend:/home/app/volumes/backend
-#    ports:
-#      - "80:80"
-#    expose:
-#      - 80
-#    command: uvicorn --host 0.0.0.0 --port 8000 backend.server.app:app
-#    deploy:
-#      resources:
-#        reservations:
-#          devices:
-#            - driver: nvidia
-#              count: 1
-#              capabilities: [ gpu ]
-
   ollama:
     image: ollama/ollama
     restart: always
@@ -48,8 +25,16 @@ services:
     image: postgres:16-alpine
     env_file:
       - .env
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_HOST: ${DB_HOST}
+      POSTGRES_PORT: ${DB_PORT}
     ports:
-      - "5432:5432"
+      - "${DB_PORT}:${DB_PORT}"
+    expose:
+      - ${DB_PORT}
     container_name: db
     restart: always
     volumes:
@@ -60,6 +45,22 @@ services:
         limits:
           cpus: '1'
           memory: 2G
+
+  metadata:
+    image: mongo:8.0.0-rc6-jammy
+    container_name: metadata
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "${MONGO_DB_PORT}:27017"
+    expose:
+      - ${MONGO_DB_PORT}
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_DB_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_DB_PASS}
+    volumes:
+      - mongo_db:/data/db
 
   qdrant:
     image: qdrant/qdrant:latest
@@ -78,26 +79,29 @@ services:
     volumes:
       - ./volumes/qdrant/data:/qdrant_data
 
-  elasticsearch:
-    profiles:
-      - elastic
-    image: elasticsearch:8.13.0
-    configs:
-      - source: elastic_config
-        target: /usr/share/elasticsearch/config/elasticsearch.yml
-    volumes:
-      - ./volumes/elasticsearch/data:/usr/share/elasticsearch/data
-    environment:
-      ES_JAVA_OPTS: "-Xmx512m -Xms512m"
-      ELASTIC_USERNAME: "elastic"
-      ELASTIC_PASSWORD: "MyPw123"
-      discovery.type: single-node
-    ports:
-      - "9200:9200"
-      - "9300:9300"
+#  elasticsearch:
+#    profiles:
+#      - elastic
+#    image: elasticsearch:8.13.0
+#    configs:
+#      - source: elastic_config
+#        target: /usr/share/elasticsearch/config/elasticsearch.yml
+#    volumes:
+#      - ./volumes/elasticsearch/data:/usr/share/elasticsearch/data
+#    environment:
+#      ES_JAVA_OPTS: "-Xmx512m -Xms512m"
+#      ELASTIC_USERNAME: "elastic"
+#      ELASTIC_PASSWORD: "MyPw123"
+#      discovery.type: single-node
+#    ports:
+#      - "9200:9200"
+#      - "9300:9300"
 
 volumes:
   postgres_db:
+  # К сожалению, при перезапуске нужно иногда стирать volume mongo_db
+  # это связано с тем, что по-новому начинают рассчитываться хэши
+  mongo_db:
 
 configs:
   qdrant_config:
@@ -109,10 +113,10 @@ configs:
         on_disk_payload: true  
         storage_path: /qdrant_data/storage
 
-  elastic_config:
-    content: |
-      cluster.name: "vectorstore"
-      network.host: 0.0.0.0 # Для корректной работы внутри контейнера
-
-      xpack.security.enabled: true # Для поддержки функционала, обеспечивающего безопасность кластера
-      xpack.license.self_generated.type: basic # Типа лицензии "basic" для наших нужд хватит с головой
+#  elastic_config:
+#    content: |
+#      cluster.name: "vectorstore"
+#      network.host: 0.0.0.0 # Для корректной работы внутри контейнера
+#
+#      xpack.security.enabled: true # Для поддержки функционала, обеспечивающего безопасность кластера
+#      xpack.license.self_generated.type: basic # Типа лицензии "basic" для наших нужд хватит с головой

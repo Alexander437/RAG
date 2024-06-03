@@ -28,30 +28,24 @@ class Settings(BaseSettings):
     GIGACHAT_API_KEY: str = os.getenv("GIGACHAT_API_KEY", "")
 
     USER_DB_CONFIG = UserDBConfig(
-        db_name=os.getenv("POSTGRES_DB", ""),
-        db_user=os.getenv("POSTGRES_USER", ""),
-        db_pass=os.getenv("POSTGRES_PASSWORD", ""),
-        db_host=os.getenv("POSTGRES_HOST", ""),
-        db_port=os.getenv("POSTGRES_PORT", ""),
+        db_name=os.getenv("DB_NAME", ""),
+        db_user=os.getenv("DB_USER", ""),
+        db_pass=os.getenv("DB_PASS", ""),
+        db_host=os.getenv("DB_HOST", ""),
+        db_port=os.getenv("DB_PORT", ""),
+    )
+    METADATA_STORE_CONFIG = MetadataStoreConfig(
+        provider=os.getenv("METADATA_PROVIDER", "file"),
+        config=orjson.loads(os.getenv("METADATA_CONFIG"))
     )
 
     VECTOR_DB_CONFIG = os.getenv("VECTOR_DB_CONFIG", "")
     if not VECTOR_DB_CONFIG:
         raise ValueError("VECTOR_DB_CONFIG is not set")
-    try:
-        VECTOR_DB_CONFIG = VectorDBConfig.parse_obj(orjson.loads(VECTOR_DB_CONFIG))
-    except Exception as e:
-        raise ValueError(f"VECTOR_DB_CONFIG is invalid: {e}")
+    VECTOR_DB_CONFIG = VectorDBConfig.parse_obj(orjson.loads(VECTOR_DB_CONFIG))
 
-    METADATA_STORE_CONFIG = os.getenv("METADATA_STORE_CONFIG", "")
     if not METADATA_STORE_CONFIG:
-        raise ValueError("METADATA_STORE_CONFIG is not set")
-    try:
-        METADATA_STORE_CONFIG = MetadataStoreConfig.parse_obj(
-            orjson.loads(METADATA_STORE_CONFIG)
-        )
-    except Exception as e:
-        raise ValueError(f"METADATA_STORE_CONFIG is invalid: {e}")
+        raise ValueError("METADATA_CONFIG is not set")
 
 
 settings = Settings()

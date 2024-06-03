@@ -4,6 +4,7 @@ fastapi[all]
 fastapi-users[sqlalchemy]
 python-dotenv
 sqlalchemy
+pymongo
 celery
 flower
 uvicorn

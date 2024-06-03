@@ -245,7 +245,8 @@ class BaseDataSource(BaseModel):
         title="A unique identifier for the data source",
     )
     metadata: Optional[Dict[str, Any]] = Field(
-        title="Additional config for your data source"
+        title="Additional config for your data source",
+        default=None
     )
 
     @property

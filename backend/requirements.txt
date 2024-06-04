@@ -1,5 +1,6 @@
 alembic
 asyncpg
+aiofiles
 fastapi[all]
 fastapi-users[sqlalchemy]
 python-dotenv

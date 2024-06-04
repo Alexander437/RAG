@@ -6,7 +6,7 @@ from backend.auth.base_config import fastapi_users, auth_backend
 from backend.auth.schemas import UserRead, UserCreate
 from backend.rag.api_routers.components import router as components_router
 from backend.rag.api_routers.collection import router as collection_router
-# from backend.rag.api_routers.internal import router as internal_router
+from backend.rag.api_routers.internal import router as internal_router
 from backend.rag.api_routers.answer import router as answer_router
 
 app = FastAPI(
@@ -27,7 +27,7 @@ app.include_router(
 app.include_router(components_router)
 app.include_router(collection_router)
 # Добавить валидацию gigachat и path_to_model для embeddings
-# app.include_router(internal_router)
+app.include_router(internal_router)
 app.include_router(answer_router)
 
 # Cors - откуда разрешено отправлять запрос

@@ -92,6 +92,30 @@ class ExampleQueryController:
                 res = AnswerResultDto(answer=outputs["answer"], docs=[])
             return res
 
+    @classmethod
+    async def _stream_answer(cls, rag_chain, query):
+        async with async_timeout.timeout(GENERATION_TIMEOUT_SEC):
+            try:
+                async for chunk in rag_chain.astream(query):
+                    if "question " in chunk:
+                        # print("Question: ", chunk['question'])
+                        yield json.dumps({"question": chunk["question"]})
+                        await asyncio.sleep(0.1)
+                    elif "context" in chunk:
+                        # print("Context: ", cls._format_docs_for_stream(chunk['context']))
+                        yield json.dumps(
+                            {"docs": cls._format_docs_for_stream(chunk["context"])}
+                        )
+                        await asyncio.sleep(0.1)
+                    elif "answer" in chunk:
+                        # print("Answer: ", chunk['answer'])
+                        yield json.dumps({"answer": chunk["answer"]})
+                        await asyncio.sleep(0.1)
+
+                yield json.dumps({"end": "<END>"})
+            except asyncio.TimeoutError:
+                raise HTTPException(status_code=504, detail="Stream timed out")
+
     @staticmethod
     def _get_llm(model_configuration, stream=False):
         """
@@ -241,30 +265,6 @@ class ExampleQueryController:
             raise HTTPException(status_code=404, detail="Retriever not found")
 
         return retriever
-
-    @classmethod
-    async def _stream_answer(cls, rag_chain, query):
-        async with async_timeout.timeout(GENERATION_TIMEOUT_SEC):
-            try:
-                async for chunk in rag_chain.astream(query):
-                    if "question " in chunk:
-                        # print("Question: ", chunk['question'])
-                        yield json.dumps({"question": chunk["question"]})
-                        await asyncio.sleep(0.1)
-                    elif "context" in chunk:
-                        # print("Context: ", cls._format_docs_for_stream(chunk['context']))
-                        yield json.dumps(
-                            {"docs": cls._format_docs_for_stream(chunk["context"])}
-                        )
-                        await asyncio.sleep(0.1)
-                    elif "answer" in chunk:
-                        # print("Answer: ", chunk['answer'])
-                        yield json.dumps({"answer": chunk["answer"]})
-                        await asyncio.sleep(0.1)
-
-                yield json.dumps({"end": "<END>"})
-            except asyncio.TimeoutError:
-                raise HTTPException(status_code=504, detail="Stream timed out")
 
 #######
 # Streaming Client

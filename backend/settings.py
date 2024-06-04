@@ -23,7 +23,7 @@ class Settings(BaseSettings):
     METADATA_STORE_CONFIG: MetadataStoreConfig
 
     # LLM
-    LOCAL: bool = os.getenv("LOCAL", True)
+    LOCAL: bool = os.getenv("LOCAL", True)  # Allow local models
     OLLAMA_URL: str = os.getenv("OLLAMA_URL", "http://localhost:11434")
     GIGACHAT_API_KEY: str = os.getenv("GIGACHAT_API_KEY", "")
 

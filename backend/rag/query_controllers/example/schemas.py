@@ -119,7 +119,7 @@ class ExampleQueryInput(BaseModel):
 
     query: str = Field(title="Запрос для поиска")
 
-    model_configuration: LLMConfig
+    llm_configuration: LLMConfig
 
     prompt_template: str = Field(
         title="Шаблон для промпта для генерации ответа с учетом контекста",

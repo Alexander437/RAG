@@ -12,7 +12,7 @@ from backend.rag.query_controllers.example.schemas import ExampleQueryInput
 request = {
     "collection_name": "example",
     "query": "Какие нормативно-правовые документы регламентируют политику в области связи?",
-    "model_configuration": {
+    "llm_configuration": {
         "name": "bambucha/saiga-llama3",
         "provider": "ollama",
         "parameters": {"temperature": 0.1},

@@ -41,7 +41,7 @@ class ExampleQueryController:
         )
 
         # Get the LLM
-        llm = cls._get_llm(request.model_configuration, request.stream)
+        llm = cls._get_llm(request.llm_configuration, request.stream)
 
         # get retriever
         retriever = await cls._get_retriever(
@@ -117,24 +117,25 @@ class ExampleQueryController:
                 raise HTTPException(status_code=504, detail="Stream timed out")
 
     @staticmethod
-    def _get_llm(model_configuration, stream=False):
+    def _get_llm(llm_configuration, stream=False):
         """
         Возвращает объект LLM
         """
         system = "Ты — русскоязычный автоматический ассистент. Ты разговариваешь с людьми и помогаешь им."
-        if model_configuration.provider == "gigachat":
-            logger.debug(f"Using GigaChat model {model_configuration.name}")
+        if llm_configuration.provider == "gigachat":
+            logger.debug(f"Using GigaChat model {llm_configuration.name}")
             llm = GigaChat(
-                model=model_configuration.name,
-                temperature=model_configuration.parameters.get("temperature", 0.1),
+                credentials=settings.GIGACHAT_API_KEY,
+                temperature=llm_configuration.parameters.get("temperature", 0.1),
                 streaming=stream,
+                verify_ssl_certs=False
             )
-        else:  # model_configuration.provider == "ollama":
-            logger.debug(f"Using Ollama model {model_configuration.name}")
+        else:  # llm_configuration.provider == "ollama":
+            logger.debug(f"Using Ollama model {llm_configuration.name}")
             llm = ChatOllama(
                 base_url=settings.OLLAMA_URL,
-                model=model_configuration.name,
-                temperature=model_configuration.parameters.get("temperature", 0.1),
+                model=llm_configuration.name,
+                temperature=llm_configuration.parameters.get("temperature", 0.1),
                 system=system,
             )
         return llm
@@ -268,16 +269,15 @@ class ExampleQueryController:
 
 #######
 # Streaming Client
-
+#
 # import httpx
 # from httpx import Timeout
-
-# from backend.modules.query_controllers.example.types import ExampleQueryInput
-
+# from backend.rag.query_controllers.example.schemas import ExampleQueryInput
+#
 # payload = {
 #   "collection_name": "pstest",
 #   "query": "What are the features of Diners club black metal edition?",
-#   "model_configuration": {
+#   "llm_configuration": {
 #     "name": "openai-devtest/gpt-3-5-turbo",
 #     "parameters": {
 #       "temperature": 0.1
@@ -295,11 +295,11 @@ class ExampleQueryController:
 #   },
 #   "stream": True
 # }
-
+#
 # data = ExampleQueryInput(**payload).dict()
-# ENDPOINT_URL = 'http://localhost:8000/retrievers/example-app/answer'
-
-
+# ENDPOINT_URL = 'http://localhost:8000/answer'
+#
+#
 # with httpx.stream('POST', ENDPOINT_URL, json=data, timeout=Timeout(5.0*60)) as r:
 #     for chunk in r.iter_text():
 #         print(chunk)

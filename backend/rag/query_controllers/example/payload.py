@@ -1,9 +1,23 @@
 QUERY_WITH_VECTOR_STORE_RETRIEVER_SIMILARITY = {
     "collection_name": "example",
     "query": "Что говорится в Конституции по поводу защиты информации?",
-    "model_configuration": {
+    "llm_configuration": {
         "name": "bambucha/saiga-llama3",
         "provider": "ollama",
+        "parameters": {"temperature": 0.1},
+    },
+    "prompt_template": "Ответ на вопрос дайте, опираясь только на следующий контекст:\nКонтекст: {context} \nВопрос: {question}",
+    "retriever_name": "vectorstore",
+    "retriever_config": {"search_type": "similarity", "search_kwargs": {"k": 5}},
+    "stream": False,
+}
+
+QUERY_WITH_VECTOR_STORE_RETRIEVER_SIMILARITY_GIGACHAT = {
+    "collection_name": "test",
+    "query": "Что говорится в Конституции по поводу защиты информации?",
+    "llm_configuration": {
+        "name": "GigaChat",
+        "provider": "gigachat",
         "parameters": {"temperature": 0.1},
     },
     "prompt_template": "Ответ на вопрос дайте, опираясь только на следующий контекст:\nКонтекст: {context} \nВопрос: {question}",
@@ -24,7 +38,7 @@ QUERY_WITH_VECTOR_STORE_RETRIEVER_PAYLOAD = {
 QUERY_WITH_VECTOR_STORE_RETRIEVER_MMR = {
     "collection_name": "example",
     "query": "Расскажи в деталях все виды ответственности, связанные с утечками персональных данных",
-    "model_configuration": {
+    "llm_configuration": {
         "name": "bambucha/saiga-llama3",
         "provider": "ollama",
         "parameters": {"temperature": 0.1},
@@ -53,7 +67,7 @@ QUERY_WITH_VECTOR_STORE_RETRIEVER_MMR_PAYLOAD = {
 QUERY_WITH_VECTOR_STORE_RETRIEVER_SIMILARITY_SCORE = {
     "collection_name": "example",
     "query": "Расскажи в деталях все виды ответственности, связанные с утечками персональных данных",
-    "model_configuration": {
+    "llm_configuration": {
         "name": "bambucha/saiga-llama3",
         "provider": "ollama",
         "parameters": {"temperature": 0.1},
@@ -79,13 +93,13 @@ QUERY_WITH_VECTOR_STORE_RETRIEVER_SIMILARITY_SCORE_PAYLOAD = {
 QUERY_WITH_CONTEXTUAL_COMPRESSION_RETRIEVER = {
     "collection_name": "example",
     "query": "Расскажи в деталях все виды ответственности, связанные с утечками персональных данных",
-    "model_configuration": {
+    "llm_configuration": {
         "name": "bambucha/saiga-llama3",
         "provider": "ollama",
         "parameters": {"temperature": 0.1},
     },
     "prompt_template": "Ответ на вопрос дайте, опираясь только на следующий контекст:\nКонтекст: {context} \nВопрос: {question}",
-    "retriever_name": "contexual-compression",
+    "retriever_name": "contextual-compression",
     "retriever_config": {
         "compressor_model_provider": "mixbread-ai",
         "compressor_model_name": "mixedbread-ai/mxbai-rerank-xsmall-v1",
@@ -110,13 +124,13 @@ QUERY_WITH_CONTEXTUAL_COMPRESSION_RETRIEVER_PAYLOAD = {
 QUERY_WITH_CONTEXTUAL_COMPRESSION_RETRIEVER_SEARCH_TYPE_MMR = {
     "collection_name": "example",
     "query": "Расскажи в деталях все виды ответственности, связанные с утечками персональных данных",
-    "model_configuration": {
+    "llm_configuration": {
         "name": "bambucha/saiga-llama3",
         "provider": "ollama",
         "parameters": {"temperature": 0.1},
     },
     "prompt_template": "Ответ на вопрос дайте, опираясь только на следующий контекст:\nКонтекст: {context} \nВопрос: {question}",
-    "retriever_name": "contexual-compression",
+    "retriever_name": "contextual-compression",
     "retriever_config": {
         "compressor_model_provider": "mixbread-ai",
         "compressor_model_name": "mixedbread-ai/mxbai-rerank-xsmall-v1",
@@ -145,13 +159,13 @@ QUERY_WITH_CONTEXTUAL_COMPRESSION_RETRIEVER_SEARCH_TYPE_MMR_PAYLOAD = {
 QUERY_WITH_CONTEXTUAL_COMPRESSION_RETRIEVER_SEARCH_TYPE_SIMILARITY_WITH_SCORE = {
     "collection_name": "example",
     "query": "Расскажи в деталях все виды ответственности, связанные с утечками персональных данных",
-    "model_configuration": {
+    "llm_configuration": {
         "name": "bambucha/saiga-llama3",
         "provider": "ollama",
         "parameters": {"temperature": 0.1},
     },
     "prompt_template": "Ответ на вопрос дайте, опираясь только на следующий контекст:\nКонтекст: {context} \nВопрос: {question}",
-    "retriever_name": "contexual-compression",
+    "retriever_name": "contextual-compression",
     "retriever_config": {
         "compressor_model_provider": "mixbread-ai",
         "compressor_model_name": "mixedbread-ai/mxbai-rerank-xsmall-v1",
@@ -176,7 +190,7 @@ QUERY_WITH_CONTEXTUAL_COMPRESSION_RETRIEVER_SEARCH_TYPE_SIMILARITY_WITH_SCORE_PA
 QUERY_WITH_MULTI_QUERY_RETRIEVER_SIMILARITY = {
     "collection_name": "example",
     "query": "Расскажи в деталях все виды ответственности, связанные с утечками персональных данных",
-    "model_configuration": {
+    "llm_configuration": {
         "name": "bambucha/saiga-llama3",
         "provider": "ollama",
         "parameters": {"temperature": 0.1},
@@ -208,7 +222,7 @@ QUERY_WITH_MULTI_QUERY_RETRIEVER_SIMILARITY_PAYLOAD = {
 QUERY_WITH_MULTI_QUERY_RETRIEVER_MMR = {
     "collection_name": "example",
     "query": "Расскажи в деталях все виды ответственности, связанные с утечками персональных данных",
-    "model_configuration": {
+    "llm_configuration": {
         "name": "bambucha/saiga-llama3",
         "provider": "ollama",
         "parameters": {"temperature": 0.1},
@@ -242,7 +256,7 @@ QUERY_WITH_MULTI_QUERY_RETRIEVER_MMR_PAYLOAD = {
 QUERY_WITH_MULTI_QUERY_RETRIEVER_SIMILARITY_SCORE = {
     "collection_name": "example",
     "query": "Расскажи в деталях все виды ответственности, связанные с утечками персональных данных",
-    "model_configuration": {
+    "llm_configuration": {
         "name": "bambucha/saiga-llama3",
         "provider": "ollama",
         "parameters": {"temperature": 0.1},
@@ -275,13 +289,13 @@ QUERY_WITH_MULTI_QUERY_RETRIEVER_SIMILARITY_SCORE_PAYLOAD = {
 QUERY_WITH_CONTEXTUAL_COMPRESSION_MULTI_QUERY_RETRIEVER_MMR = {
     "collection_name": "example",
     "query": "Расскажи в деталях все виды ответственности, связанные с утечками персональных данных",
-    "model_configuration": {
+    "llm_configuration": {
         "name": "bambucha/saiga-llama3",
         "provider": "ollama",
         "parameters": {"temperature": 0.1},
     },
     "prompt_template": "Ответ на вопрос дайте, опираясь только на следующий контекст:\nКонтекст: {context} \nВопрос: {question}",
-    "retriever_name": "contexual-compression-multi-query",
+    "retriever_name": "contextual-compression-multi-query",
     "retriever_config": {
         "compressor_model_provider": "mixbread-ai",
         "compressor_model_name": "mixedbread-ai/mxbai-rerank-xsmall-v1",
@@ -313,13 +327,13 @@ QUERY_WITH_CONTEXTUAL_COMPRESSION_MULTI_QUERY_RETRIEVER_MMR_PAYLOAD = {
 QUERY_WITH_CONTEXTUAL_COMPRESSION_MULTI_QUERY_RETRIEVER_SIMILARITY = {
     "collection_name": "example",
     "query": "Расскажи в деталях все виды ответственности, связанные с утечками персональных данных",
-    "model_configuration": {
+    "llm_configuration": {
         "name": "bambucha/saiga-llama3",
         "provider": "ollama",
         "parameters": {"temperature": 0.1},
     },
     "prompt_template": "Ответ на вопрос дайте, опираясь только на следующий контекст:\nКонтекст: {context} \nВопрос: {question}",
-    "retriever_name": "contexual-compression-multi-query",
+    "retriever_name": "contextual-compression-multi-query",
     "retriever_config": {
         "compressor_model_provider": "mixbread-ai",
         "compressor_model_name": "mixedbread-ai/mxbai-rerank-xsmall-v1",
@@ -348,13 +362,13 @@ QUERY_WITH_CONTEXTUAL_COMPRESSION_MULTI_QUERY_RETRIEVER_SIMILARITY_PAYLOAD = {
 QUERY_WITH_CONTEXTUAL_COMPRESSION_MULTI_QUERY_RETRIEVER_SIMILARITY_SCORE = {
     "collection_name": "example",
     "query": "Расскажи в деталях все виды ответственности, связанные с утечками персональных данных",
-    "model_configuration": {
+    "llm_configuration": {
         "name": "bambucha/saiga-llama3",
         "provider": "ollama",
         "parameters": {"temperature": 0.1},
     },
     "prompt_template": "Ответ на вопрос дайте, опираясь только на следующий контекст:\nКонтекст: {context} \nВопрос: {question}",
-    "retriever_name": "contexual-compression-multi-query",
+    "retriever_name": "contextual-compression-multi-query",
     "retriever_config": {
         "compressor_model_provider": "mixbread-ai",
         "compressor_model_name": "mixedbread-ai/mxbai-rerank-xsmall-v1",

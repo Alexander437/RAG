@@ -14,7 +14,7 @@ router = APIRouter(
 @router.post("/")
 async def answer(
     request: ExampleQueryInput = Body(openapi_examples=example_answer_payload)
-) -> AnswerResultDto:
+):  # -> AnswerResultDto:
     try:
         res = await ExampleQueryController.answer(request)
         return res

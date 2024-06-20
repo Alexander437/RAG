@@ -1,7 +1,9 @@
 from typing import Dict, List
-from fastapi import APIRouter, HTTPException, Body
+from fastapi import APIRouter, HTTPException, Body, Depends
 from fastapi.responses import JSONResponse
 
+from backend.auth.base_config import current_user
+from backend.auth.models import User
 from backend.logger import logger
 from backend.rag.api_routers.examples.collection import example_create_collection, example_associate_data_source, \
     example_unassociate_data_source, example_ingest, example_runs_list
@@ -20,7 +22,7 @@ router = APIRouter(
 
 
 @router.get("/")
-def get_collections() -> Dict[str, List[Collection]]:
+def get_collections(user: User = Depends(current_user)) -> Dict[str, List[Collection]]:
     try:
         logger.debug("Listing all collections...")
         collections = METADATA_STORE_CLIENT.get_collections()
@@ -34,7 +36,8 @@ def get_collections() -> Dict[str, List[Collection]]:
 
 @router.post("/")
 def create_collection(
-        collection: CreateCollectionDto = Body(openapi_examples=example_create_collection)
+        collection: CreateCollectionDto = Body(openapi_examples=example_create_collection),
+        user: User = Depends(current_user)
 ) -> Dict[str, Collection]:
     try:
         logger.debug(f"Creating collection {collection.name}...")

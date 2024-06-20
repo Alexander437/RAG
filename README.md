@@ -22,7 +22,6 @@ docker compose --profile elastic up
 
 ## Проблемы
 
-* разобраться с потоковой передачей в `query_controllers`
 * включить авторизацию в вызовы api и сделать уведомления на почту
 * Добавить OCR для чтения pdf и фото
 * Возможно нужен celery?
@@ -40,7 +39,89 @@ POST `/collections/ingest` -> в аргументах должен быть аб
 2. `docker compose up`
 3. `python ingest.py`
 
+## Развертывание на Proxmox
 
+```bash
+vi /etc/apt/sources.list
+```
+```
+deb http://ftp.debian.org/debian bookworm main contrib
+deb http://ftp.debian.org/debian bookworm-updates main contrib
+
+# Proxmox VE pve-no-subscription repository provided by proxmox.com,
+# NOT recommended for production use
+deb http://download.proxmox.com/debian/pve bookworm pve-no-subscription
+
+# security updates
+deb http://security.debian.org/debian-security bookworm-security main contrib
+``` 
+```bash
+vi /etc/apt/sources.list.d/ceph.list
+```
+```
+# deb https://enterprise.proxmox.com/debian/ceph-quincy bookworm enterprise
+```
+```bash
+vi /etc/apt/sources.list.d/pve-enterprise.list
+```
+```
+# deb https://enterprise.proxmox.com/debian/pve bookworm pve-enterprise
+```
+```bash
+apt-get update
+apt-get upgrade 
+cd  /var/lib/vz/template/iso 
+wget https://mirror.linux-ia64.org/ubuntu-releases/24.04/ubuntu-24.04-live-server-amd64.iso
+```
+
+#### Сервисы
+
+| Сервис                 | min требования             | Оптимально                      | .                                           | 
+|------------------------|----------------------------|---------------------------------|---------------------------------------------|
+| БД Postgres            | 1 CPU, 2 GB RAM, 3 GB disk | 4 CPU, 4 GB RAM, 32 GB disk     |                                             |
+| FastAPI server с mongo | 2 CPU, 4 GB RAM, 3 GB disk | 4 CPU, 4 GB RAM, 10 GB disk     |                                             |
+| Qdrant                 | 4 GB RAM                   | (4 CPU), 4 GB RAM, (32 GB disk) | 1e6 векторов по 512 с фактором репликации 2 | 
+
+
+#### Postgres
+
+```bash
+# установить при установке ubuntu и обновить
+sudo apt install --upgrade postgresql
+```
+
+#### Qdrant
+
+```bash
+sudo -s 
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+reboot
+rustc --version
+
+apt-get install -y git mold
+apt-get install -y pkg-config gcc g++ libc6-dev libunwind-dev
+apt-get install -y --no-install-recommends ca-certificates tzdata libunwind8
+git clone https://github.com/qdrant/qdrant
+cd qdrant
+cargo build --release --bin qdrant
+vi /lib/systemd/system/qdrant.service
+```
+```
+[Unit]
+Description=Qdrant vector DB
+
+[Service]
+ExecStart=~/qdrant/tools/entrypoint.sh
+User=root
+
+[Install]
+WantedBy=multi-user.target 
+```
+```bash
+systemctl start qdrant.service
+systemctl stop qdrant.service
+systemctl enable qdrant.service
+```
 ## Server requirements
 
 При использовании API (ChatGPT, GigaChat и др.), 

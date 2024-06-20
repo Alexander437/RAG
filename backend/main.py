@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from backend.auth.base_config import fastapi_users, auth_backend
-from backend.auth.schemas import UserRead, UserCreate
+from backend.auth.schemas import UserRead, UserCreate, UserUpdate
 from backend.rag.api_routers.components import router as components_router
 from backend.rag.api_routers.collection import router as collection_router
 from backend.rag.api_routers.internal import router as internal_router
@@ -14,7 +14,7 @@ app = FastAPI(
 )
 
 app.include_router(
-    fastapi_users.get_auth_router(auth_backend),
+    fastapi_users.get_auth_router(auth_backend),  # , requires_verification=True),
     prefix="/auth",
     tags=["auth"],
 )
@@ -22,6 +22,21 @@ app.include_router(
     fastapi_users.get_register_router(UserRead, UserCreate),
     prefix="/auth",
     tags=["auth"],
+)
+app.include_router(
+    fastapi_users.get_verify_router(UserRead),
+    prefix="/auth",
+    tags=["auth"],
+)
+app.include_router(
+    fastapi_users.get_reset_password_router(),
+    prefix="/auth",
+    tags=["auth"],
+)
+app.include_router(
+    fastapi_users.get_users_router(UserRead, UserUpdate),  # , requires_verification=True),
+    prefix="/users",
+    tags=["users"],
 )
 
 app.include_router(components_router)

@@ -1,9 +1,9 @@
 import os
 
 import orjson
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
-from backend.auth.schemas import UserDBConfig
+from backend.auth.schemas import UserDBConfig, SMTPConfig
 from backend.rag.schemas import VectorDBConfig, MetadataStoreConfig
 
 
@@ -17,6 +17,15 @@ class Settings(BaseSettings):
     # Auth
     USER_DB_CONFIG: UserDBConfig
     AUTH_SECRET: str = os.getenv("AUTH_SECRET", "")
+    # Redis for celery
+    REDIS_URL: str = os.getenv("REDIS_URL", "redis://localhost:6379/0")
+    # SMTP
+    SMTP_CONFIG = SMTPConfig(
+        host=os.getenv("SMTP_HOST", "smtp.mail.ru"),
+        port=int(os.getenv("SMTP_PORT", 587)),
+        user=os.getenv("SMTP_USERNAME", ""),
+        password=os.getenv("SMTP_PASSWORD", ""),
+    )
     # Vector DB
     VECTOR_DB_CONFIG: VectorDBConfig
     # Metastore
@@ -50,6 +59,8 @@ class Settings(BaseSettings):
 
     if not METADATA_STORE_CONFIG:
         raise ValueError("METADATA_CONFIG is not set")
+
+    model_config = SettingsConfigDict(env_file=".env")
 
 
 settings = Settings()

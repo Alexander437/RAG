@@ -79,20 +79,20 @@ services:
     volumes:
       - ./volumes/qdrant/data:/qdrant_data
 
-  cache:
-    image: redis:7.2-alpine
-    restart: always
-    container_name: cache
-    env_file:
-      - .env
-    environment:
-      - ALLOW_EMPTY_PASSWORD=no
-      - REDIS_PASSWORD=${REDIS_PASS}
-    ports:
-      - "${REDIS_PORT}:${REDIS_PORT}"
-    expose:
-      - ${REDIS_PORT}
-    command: ["redis-server", "--port", "${REDIS_PORT}", "--loglevel", "warning"]
+#  cache:
+#    image: redis:7.2-alpine
+#    restart: always
+#    container_name: cache
+#    env_file:
+#      - .env
+#    environment:
+#      - ALLOW_EMPTY_PASSWORD=no
+#      - REDIS_PASSWORD=${REDIS_PASS}
+#    ports:
+#      - "${REDIS_PORT}:${REDIS_PORT}"
+#    expose:
+#      - ${REDIS_PORT}
+#    command: ["redis-server", "--port", "${REDIS_PORT}", "--loglevel", "warning"]
     # `--save 60 1` чтобы сохранять копии каждые 60с, если была хотя бы одна операция
 
 #  elasticsearch:

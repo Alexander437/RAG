@@ -1,7 +1,7 @@
 import os
 
 import orjson
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import BaseSettings
 
 from backend.auth.schemas import UserDBConfig, SMTPConfig
 from backend.rag.schemas import VectorDBConfig, MetadataStoreConfig
@@ -20,12 +20,7 @@ class Settings(BaseSettings):
     # Redis for celery
     REDIS_URL: str = os.getenv("REDIS_URL", "redis://localhost:6379/0")
     # SMTP
-    SMTP_CONFIG = SMTPConfig(
-        host=os.getenv("SMTP_HOST", "smtp.mail.ru"),
-        port=int(os.getenv("SMTP_PORT", 587)),
-        user=os.getenv("SMTP_USERNAME", ""),
-        password=os.getenv("SMTP_PASSWORD", ""),
-    )
+    SMTP_CONFIG: SMTPConfig
     # Vector DB
     VECTOR_DB_CONFIG: VectorDBConfig
     # Metastore
@@ -36,6 +31,12 @@ class Settings(BaseSettings):
     OLLAMA_URL: str = os.getenv("OLLAMA_URL", "http://localhost:11434")
     GIGACHAT_API_KEY: str = os.getenv("GIGACHAT_API_KEY", "")
 
+    SMTP_CONFIG: SMTPConfig = SMTPConfig(
+        host=os.getenv("SMTP_HOST", "smtp.mail.ru"),
+        port=int(os.getenv("SMTP_PORT", 587)),
+        user=os.getenv("SMTP_USER", ""),
+        password=os.getenv("SMTP_PASS", ""),
+    )
     USER_DB_CONFIG = UserDBConfig(
         db_name=os.getenv("DB_NAME", ""),
         db_user=os.getenv("DB_USER", ""),
@@ -59,8 +60,6 @@ class Settings(BaseSettings):
 
     if not METADATA_STORE_CONFIG:
         raise ValueError("METADATA_CONFIG is not set")
-
-    model_config = SettingsConfigDict(env_file=".env")
 
 
 settings = Settings()

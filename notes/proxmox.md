@@ -46,6 +46,13 @@ wget https://mirror.linux-ia64.org/ubuntu-releases/24.04/ubuntu-24.04-live-serve
 ```bash
 # установить при установке ubuntu и обновить
 sudo apt install --upgrade postgresql
+curl -fsS https://www.pgadmin.org/static/packages_pgadmin_org.pub | sudo gpg --dearmor -o /usr/share/keyrings/packages-pgadmin-org.gpg
+sudo sh -c 'echo "deb [signed-by=/usr/share/keyrings/packages-pgadmin-org.gpg] https://ftp.postgresql.org/pub/pgadmin/pgadmin4/apt/$(lsb_release -cs) pgadmin4 main" > /etc/apt/sources.list.d/pgadmin4.list && apt update'
+sudo apt install pgadmin4-web
+sudo /usr/pgadmin4/bin/setup-web.sh
+# http://{postgres_host}/pgadmin4
+# Query tool
+# INSERT INTO role VALUES (1, 'user', null);
 sudo vi /etc/postgresql/16/main/postgresql.conf
 ```
 ``` 
@@ -142,6 +149,7 @@ curl -fsSL https://www.mongodb.org/static/pgp/server-7.0.asc | \
 echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
 sudo apt-get update && sudo apt-get upgrade -y
 sudo apt-get install -y mongodb-org
+sudo vi /etc/mongod.conf
 sudo systemctl enable mongod --now
 ```
 
